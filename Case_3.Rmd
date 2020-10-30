@@ -1,17 +1,83 @@
 ---
 title: "Election Prediction"
-author: "Ziyang Ding"
+author: "Bob, Becca, Rena, Grace"
 date: "10/16/2020"
 output: pdf_document
 ---
 
-```{r}
+```{r packages, include=F}
 library(tidyverse)
 library(R2jags)
 ```
 
 
-```{r}
+# 1. Introduction
+
+The outcome of the 2016 election not only stunned the nation, but also sent shockwaves through the statistical and polling communities. Over the course of the election year in 2016 up until the week of the election, poll predictions of Hillary Clinton's likelihood of beating Donald Trump ranged from 71%- 99% probability [1]. So when Trump beat these odds, the polling industry lost a lot of trust from the general public [2].
+
+This small, specialized industry that is the political polling business, has a great deal of influence on how the election is portrayed in the news media, voter decisions, and candidate partisan policy initiatives. [1]. Million dollar decisions on advertising and campaign strategy are dictated by polls. 
+
+Polls conducted early in the election year are a weak predictor of election outcomes because the general public has paid less attention to the race and is less knowledgeable of the candidates' platforms. Voters that tend to sway between parties often report that they are undecided, however these are arguably the most important opinions in predicting the election outcomes. [3] As the election nears, polls become more accurate, but that is where historical prediction models have been lacking -- they fail to take into account the differential accuracy in poll results. Historical models, regression based models that rely on outcomes from past elections and structural factors, predict election outcomes at a single point in time which renders high levels of uncertainty [4]. 
+
+Drew A. Linzer developed a dynamic bayesian forecasting model to predict the U.S. presidential election at the national and state level that combines these historical models with everchanging poll updates. Linzer's model uses hierarchical specification to handle states being polled on different days and takes into account sampling errors of the polls and national campaign effects [4]. 
+
+In this report we aim to:
+
+* Predict the outcome of the presidential election and the electoral college vote using the Linzer model to predict swing state outcomes in combination 
+
+* Predict whether the US Senate remains in Republican control by using an adaptation of the Linzer model and FiveThirtyEight Senate poll data for each state
+
+* Predict the outcomes of all 13 NC Congressional elections using Linzer model with input from FiveThirtyEight Senate poll data for North Carolina along with our model that predicts who will vote in North Carolina
+
+* Predict the outcome of the NC Senate election and the associated uncertainty using the Linzer model.
+
+Taking into account the anomaly that was the 2016 election, we chose to use the Linzer model to best account for slight and unexpected changes leading up to election day. In Section 2 of this report we will discuss datasets used for all tasks, including a brief exploratory data analysis. In Section 3, we formulate models and methodologies that answer all the research questions. Section 4 will present model diagnostic and sanity check validation of prediction. Then, in section 5 we present the major results of our analysis. Section 6 will be focused on conducting sensitivity analysis to test data imputation hypothesis and prior choices.
+
+
+
+# 2. Data Source and EDA
+
+## 2.1 Description of Data
+
+In order to answer these questions, we used a total of four datasets: senate polls, house polls, 2020 US presidential election polls, and North Carolina voter registration history snapshot dataset. Both the senate and house polls dataset comes from the fivethirtyeight website [5], while the presidential election polls dataset comes from the Economist website [6].Senate and house polls have 38 variables and 4061 and 2655 observations respectively. The presidential election polls have 1447 observations and 17 variables which are: poll state, pollster, sponsor, start and end date, entry time, number of observations, population, method, Biden, Trump, Biden margin, other, undecided, URL, include, and notes.
+
+The North Carolina voter history dataset contains information on the 2016 elections and about how voters voted (method, election, county, party affiliation, precinct). This will help us model and identify potential voters in 2020 (Interim report). On top of the created model, we used the 2020 voter registration snapshot dataset to identify potential voters, and use this information as additional input to model house polls results.
+
+
+## 2.2 Exploratory Data Analysis
+
+
+To get a basic understanding of the four datasets we were working with, we went through the data to understand what we were working with. In the senate and the house polls, we explored the variables of: methodology of the poll, the state in which the poll was conducted, which party the candidate was, and the percentage of the poll. In the presidential election polls, we explored similar variables of: method of poll and state, in addition to the margin between Biden and Trump. Because all three of these datasets had similar variables, we are able to compare them to each other. In Figure A, we can see how the methods of polling were distributed between the house, senate, and presidential polls. In Figure B, we can see how each poll's distribution of which state was polled, and in Figure C, we can see how the house and senate polls' candidate party are different from each other. Finally, in Figure D, we can see the distribution of the margin between Biden and Trump.
+
+To explore the North Carolina voter history dataset, we looked at variables such as method, county, and party affiliation of the voter. We can see in Figure E that the majority of North Carolina voters are from two counties, Wake and Mecklenberg. Party affiliation and the method that the voters used are included in our appendix.
+
+
+# 3. Model Formulation
+
+## 3.1 Model for Question 1
+
+In this section, we build a model to answer our first research question: Predict the outcome of the presidential election and the electoral college vote using the Linzer model to predict swing state outcomes in combination. We follow the route of Linzer and build our model. Specifically, the motivation is that we want to model Joe Biden's percentage of EC vote in the state specific level of detail. We believe that throughout time, each state's preference for Joe Biden is randomly varying and follows a random walk process. Besides, each state's uncertainty of their attitude towards Joe Biden is also state-widely different. We make the assumption that such uncertainty is constant throughout time. Therefore, we create the following extension of Linzer Model.
+
+$$
+\begin{aligned}
+y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
+\text { for } t>1: \beta_{i t} & \sim N\left(\beta_{i, t-1}, (\sigma_{\beta}^{2})\right) \\
+\text { for } t=1: \beta_{i 1} & \sim N\left( \mu_0, \sigma^{2}_0\right) \\
+(\sigma_y^2)_{i[k]} &\sim \text{InvGamma}(\nu_y, \tau_y)\\
+(\sigma_\beta^2) &\sim \text{InvGamma}(\nu_\beta, \tau_\beta)\\\\
+\mu_0 &\sim N(50, 17)\\
+\sigma_0^2 &\sim \text{InvGamma}(\frac{1}{2}, \frac{1}{2})\\
+\nu_y &\sim \text{Uni}(0, 100)\\
+\tau_y &\sim \text{Uni}(0, 100)\\
+\nu_\beta &\sim \text{Uni}(0, 100)\\
+\tau_\beta &\sim \text{Uni}(0, 100)\\
+\end{aligned}
+$$
+
+Where $k$ index the polls, $i$ index the states, and $t$ index the date. $i[k]$ represents the $k^{th}$ poll's corresponding state index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index. We model samples from the economist poll data of 2020 and therefore are able to sample the posterior distribution of 1) Joe Biden's chance of winning, and 2) total electoral vote. The sampled posterior distribution y (percentage of supportance within each state) will be calculated by comparing to rounding by 50% to simulate the "winner takes all" procedure. After such adjustment, we can simply multiply the number of electoral college votes of each state to obtain a posterior distribution of electoral college votes of the entire nation. Thus, 2) can be obtained. By comparing to 270 again provides the probability of Joe Biden being elected.
+
+
+```{r data president, include=F}
 president_polls_2020 <- read_csv("2020 US presidential election polls - all_polls.csv") %>% 
   mutate(days_to_election = as.Date("2020/11/03","%Y/%m/%d" ) - as.Date(end.date, "%m/%d/%Y"),
          state = ifelse(state == "--","US",state),
@@ -37,41 +103,7 @@ jags_data <- list(y=y,t=t,r=r,
 
 ```
 
-
-
-<!-- ```{r, warning=F, message=F, include=F} -->
-
-<!-- another_poll <- read_csv("2020 US presidential election polls - all_polls.csv") -->
-
-<!-- president_polls_2020 <- president_polls_2020 %>% filter(answer %in% c("Biden","Trump")) -->
-<!-- president_polls_2020$days_to_election = as.Date(president_polls_2020$election_date, "%m/%d/%Y") - as.Date(president_polls_2020$end_date, "%m/%d/%Y") -->
-<!-- president_polls_2020$state <- ifelse(president_polls_2020$state == "NA","US",president_polls_2020$state) -->
-
-<!-- president_polls_2020 <- president_polls_2020 %>%  -->
-<!--   filter(days_to_election <= 100) -->
-
-<!-- states <- president_polls_2020$state %>% unique -->
-
-
-<!-- president_polls_2020$y = ifelse(president_polls_2020$answer == "Biden", president_polls_2020$pct, 100-president_polls_2020$pct) -->
-<!-- president_polls_2020$r <- match(president_polls_2020$state, states) -->
-<!-- president_polls_2020$t <- president_polls_2020$days_to_election + 1 #WHY PLUS ONE? -->
-
-<!-- president_y<- president_polls_2020$y -->
-<!-- president_r<- president_polls_2020$r -->
-<!-- president_t<- president_polls_2020$t -->
-
-
-<!-- N_polls <- president_y %>% length -->
-<!-- N_states <- states %>% length -->
-<!-- N_days <- president_t %>% max -->
-<!-- ``` -->
-
-
-
-# (1) President and (3) EC Vote
-
-```{r mv_model-president}
+```{r mv_model-president, include=F}
 model_mv <- function(){
   for(k in 1:N_polls){
     y[k] ~ dnorm(p[k],1/sigma2_y[r[k]]) #note no longer binomial
@@ -105,10 +137,11 @@ model_mv <- function(){
 }
 ```
 
-Re-estimate the model. 
+```{r}
+```
 
-```{r run_model_mv,eval=TRUE,cache=TRUE}
 
+```{r run-model-president,eval=TRUE,cache=TRUE, include=F}
 jags_data <- list(y=y,t=t,r=r,
                   N_polls=N_polls,N_states=N_states,N_days=N_days)
 
@@ -120,7 +153,7 @@ jags_sims_mv <- jags(data = jags_data,model.file = model_mv,parameters.to.save =
                   n.iter = 100)
 ```
 
-```{r}
+```{r voting state plot, echo=F, message=F}
 poll_plot_data <- tibble(y=jags_data$y,t=jags_data$t %>% as.integer(),state = states[jags_data$r])
 
 beta_plot_data <- lapply(1:N_states,function(st){
@@ -142,9 +175,7 @@ left_join(beta_plot_data,poll_plot_data) %>%
 
 
 
-
-
-```{r}
+```{r plot implied variance, echo=F}
 poll_plot_data$p <- jags_sims_mv$BUGSoutput$mean$p
 poll_plot_data$sigma2y <- jags_sims_mv$BUGSoutput$mean$sigma2_y[jags_data$r]
 poll_plot_data$binom_v <- (poll_plot_data$p)*(100-poll_plot_data$p)/ president_polls_2020$number.of.observations
@@ -160,32 +191,26 @@ poll_plot_data %>%
 
 ```
 
-
-```{r}
+```{r winning probability, include=F}
 sims <- jags_sims_mv$BUGSoutput$sims.list$theta[,,1]
 colnames(sims) <- states
 sims %>% {.>50} %>% colMeans()
-
-
 ```
 
-```{r}
+```{r ec vote distribution, echo=F}
 #in other states: Biden: 232-13, Trump: 306-29-18-15-10-20
 # c_ex_votes <- 232-13; t_ex_votes <- 306-29-18-15-10-20
 ec_votes <- ((sims>50) %*% diag(c(0,29,15,18,20,13,10))) %>% rowSums() + 232
 hist(ec_votes)
 ```
 
-
-
-```{r}
+```{r i don know, include=F }
 idkSenate <- sims[sims[,4]<50,] %>% {.>50} %>% colMeans()
 mean(idkSenate)
 
 ```
 
-
-```{r}
+```{r some random functions, include=F}
 reorder_cormat <- function(cormat){
   # Use correlation between variables as distance
   dd <- as.dist((1-cormat)/2)
@@ -216,7 +241,7 @@ get_heatmap <- function(cormat){
 }
 ```
 
-```{r}
+```{r cross state correlation, echo=F}
 cor_sims <- array(NA,dim = jags_sims_mv$BUGSoutput$sims.list$Sigma %>% dim)
 for(i in 1:dim(cor_sims)[1]){
   cor_sims[i,,] <- cov2cor(jags_sims_mv$BUGSoutput$sims.list$Sigma[i,,])
@@ -232,15 +257,11 @@ get_heatmap(cor_mean)
 
 
 
+## 3.2 Model for Question 2, 4
 
+In this section, we're answering question 2 and 4 jointly: Predict whether the US Senate remains in republican control and predict the outcome of the NC Senate election. Similarly, using the above model with exactly the same notation, and by switching Economist dataset to FiveThirtyEight senate polls data, the exact inference procedure can be produced. After modeling and predicting the Republican's support percentage, we can predict whether the Republican or Democrat party wins the state majority. This procedure includes the state of North Carolina. Furthermore, by summing the posterior samples of Republican senators in each state on election day, we can obtain the posterior distribution of US Senate remains in Republican Party's control.
 
-
-
-
-
-# (2) Senator (5) NC Senator
-
-```{r make us senator data}
+```{r make us senator data, include=F}
 senator <- read_csv("senate_polls.csv")
 senator$days_to_election = as.Date(senator$election_date, "%m/%d/%Y") - as.Date(senator$end_date, "%m/%d/%Y")
 senator <- senator %>% filter(candidate_party %in% c("DEM","REP"))
@@ -263,7 +284,18 @@ N_days <- senator_t %>% max
 
 ```
 
-```{r mv_model-senator}
+```{r}
+sort(states)
+```
+Hawaii
+
+Illinois
+
+South Dakota
+
+
+
+```{r mv_model-senator, include=F}
 model_senator <- function(){
   for(k in 1:N_polls)
   {
@@ -299,11 +331,7 @@ model_senator <- function(){
 }
 ```
 
-
-
-
-
-```{r run jags senator,eval=TRUE,cache=TRUE}
+```{r run jags senator,eval=TRUE,cache=TRUE, include=F}
 
 senator_jags_data <- list(y=senator_y,t=senator_t,r=senator_r,
                   N_polls=N_polls,N_states=N_states,N_days=N_days)
@@ -341,7 +369,6 @@ left_join(senator_beta_plot_data,senator_poll_plot_data) %>%
 
 ```
 
-
 ```{r plot senator prob for all state, eval=F}
 senator_poll_plot_data$p <- jags_sims_senator$BUGSoutput$mean$p
 senator_poll_plot_data$sigma2y <- jags_sims_senator$BUGSoutput$mean$sigma2_y[senator_jags_data$r]
@@ -357,8 +384,7 @@ senator_poll_plot_data %>%
 
 ```
 
-
-```{r}
+```{r all state senator expectation, include=F}
 senator_sims <- jags_sims_senator$BUGSoutput$sims.list$theta[,,1]
 colnames(senator_sims) <- states
 senator_sims %>% {.>50} %>% colMeans()
@@ -369,28 +395,53 @@ temp <- as.data.frame( t(senator_sims %>% {.>50} %>% colMeans()) )
 temp$`North Carolina`
 ```
 
-
 ```{r}
+# names(senator_sims)
+
+```
+
+```{r prob senator remains in control of republican}
+#need to change!!
 #in other states: Biden: 232-13, Trump: 306-29-18-15-10-20
 # c_ex_votes <- 232-13; t_ex_votes <- 306-29-18-15-10-20
-ec_votes <-  ( { sims>50 } %*% diag(c(0,29,15,18,20,13,10))) %>% rowSums() + 232
-hist(ec_votes)
+total_rep_senate <-  ( { senator_sims>50 } * 2) %>% rowSums() + 2
+hist(total_rep_senate)
 
-hist( rowMeans(senator_sims) )
 
-sum( rowMeans(senator_sims) > 50 ) / dim(senator_sims)[1]
+sum( rowMeans(senator_sims* 48/50 + 2)>50   ) / dim(senator_sims)[1]
 ```
 
 
-# 13 Congressional District
+## 3.3 Model for Question 3
+
+In this section, we answer research question 3: Predict the outcomes of all 13 NC Congressional elections. The dataset we've used is the FiveThirtyEight house poll data. However, the dataset's sample sizes on each NC congressional district are small. This is due to the fact house polls happen less frequently compared to either senate polls or presidential polls. Besides, not all congressional districts are competitive because there is no term limit for representatives. FiveThirtyEight has only recorded poll history data for competitive districts including districts 2,3,7,8,9,11,13. Thus, correlation between non-competitive districts cannot be captured without inputting extra datasets. Thus, we concatenated this section's modeling procedure with the output of the interim reports' "who vote" results. 
+
+Using the model to predict who will vote in 2020, we ran this binary output model on all the registered voters in NC to predict whether they'll vote or not. In the NC voter registration profile 2020 snapshot dataset, there is a column indicating party affiliation of each potential voter. Thus, we can predict the percentage of Republican voters for each congressional district and use this percentage as an imputed value for polls percentage. In this way, we're essentially imputing polling results for non-competitive districts, which can be also fed into the Linzer Model defined below. Such imputation is reasonable but bold. Thus, sensitivity analysis of imputed percentage will be further explored later in section ********
+
+Below is the model we're using for this task:
+
+$$
+\begin{aligned}
+y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
+\text { for } t>1: \beta_{i t} & \sim N\left(\beta_{i, t-1}, (\sigma_{\beta}^{2})\right) \\
+\text { for } t=1: \beta_{i 1} & \sim N\left( \mu_0, \sigma^{2}_0\right) \\
+(\sigma_y^2)_{i[k]} &\sim \text{InvGamma}(\nu_y, \tau_y)\\
+(\sigma_\beta^2) &\sim \text{InvGamma}(\nu_\beta, \tau_\beta)\\\\
+\mu_0 &\sim N(50, 17)\\
+\sigma_0^2 &\sim \text{InvGamma}(\frac{1}{2}, \frac{1}{2})\\
+\nu_y &\sim \text{Uni}(0, 100)\\
+\tau_y &\sim \text{Uni}(0, 100)\\
+\nu_\beta &\sim \text{Uni}(0, 100)\\
+\tau_\beta &\sim \text{Uni}(0, 100)\\
+\end{aligned}
+$$
+
+Where $k$ index the polls or the imputed polls, $i$ index the congressional district, and $t$ index the polls date. $i[k]$ represents the $k^{th}$ poll's corresponding congressional district index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index.
 
 
-```{r}
+```{r load history data, include=F}
 history <- readRDS("ncvhis_Statewide_small.rds")
 history$election_lbl <- as.Date(history$election_lbl,  "%m/%d/%y")
-```
-
-```{r}
 history$cong_dist_abbrv[history$county_desc == "BUNCOMBE"] <- 11
 history$cong_dist_abbrv[history$county_desc == "ALLEGHANY"] <- 5
 history$cong_dist_abbrv[history$county_desc == "DAVIDSON"] <- 13
@@ -455,7 +506,7 @@ district <- c(26.83741, 22.78081, 68.55712, 45.72268, 70.02141, 36.26725)
 
 ```
 
-```{r}
+```{r make hypothetical house poll data, include=F}
 house <- read_csv("house_polls.csv")
 house <- house %>% filter(state == "North Carolina")
 house$days_to_election = as.double(as.Date(house$election_date, "%m/%d/%Y") - as.Date(house$end_date, "%m/%d/%Y"))
@@ -502,7 +553,7 @@ N_days <- house_t %>% max
 
 
 
-```{r mv_model-senator}
+```{r mv_model-house, include=F}
 model_house <- function(){
   for(k in 1:N_polls)
   {
@@ -542,7 +593,7 @@ model_house <- function(){
 
 
 
-```{r run jags house,eval=TRUE,cache=TRUE}
+```{r run jags house,eval=TRUE,cache=TRUE, include=F}
 
 house_jags_data <- list(y=house_y,t=house_t,r=house_r,
                   N_polls=N_polls,N_states=N_states,N_days=N_days)
@@ -556,7 +607,7 @@ jags_sims_house <- jags(data = house_jags_data,
                           n.iter = 100)
 ```
 
-```{r plot house for all congression dist, eval=F}
+```{r plot house for all congression dist, eval=F, echo=F}
 house_poll_plot_data <- tibble(y=house_jags_data$y,
                                  t=house_jags_data$t %>% as.integer(),
                                  cong_dist = cong_dist[house_jags_data$r])
@@ -581,7 +632,7 @@ left_join(house_beta_plot_data,house_poll_plot_data) %>%
 ```
 
 
-```{r plot house prob for all cong_dist, eval=F}
+```{r plot house prob for all cong_dist, eval=F, echo=F}
 house_poll_plot_data$p <- jags_sims_house$BUGSoutput$mean$p
 house_poll_plot_data$sigma2y <- jags_sims_house$BUGSoutput$mean$sigma2_y[house_jags_data$r]
 house_poll_plot_data$binom_v <- (house_poll_plot_data$p)*(100-house_poll_plot_data$p)/ senator$sample_size !!!
