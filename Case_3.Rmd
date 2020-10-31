@@ -8,6 +8,9 @@ output: pdf_document
 ```{r packages, include=F}
 library(tidyverse)
 library(R2jags)
+library(ggplot2)
+library(knitr)
+library(matrixStats)
 ```
 
 
@@ -137,9 +140,6 @@ model_mv <- function(){
 }
 ```
 
-```{r}
-```
-
 
 ```{r run-model-president,eval=TRUE,cache=TRUE, include=F}
 jags_data <- list(y=y,t=t,r=r,
@@ -162,7 +162,7 @@ beta_plot_data <- lapply(1:N_states,function(st){
 }) %>% 
   bind_rows()
 
-left_join(beta_plot_data,poll_plot_data) %>% 
+swing_state_traj <- left_join(beta_plot_data,poll_plot_data) %>% 
   ggplot(aes(x=t)) + 
   geom_line(aes(y=mean)) + 
   geom_ribbon(aes(ymin = lb,ymax = ub),alpha = .2) + 
@@ -170,7 +170,6 @@ left_join(beta_plot_data,poll_plot_data) %>%
   scale_x_reverse() + 
   facet_wrap(~ state)
 
-# poll_plot_data
 ```
 
 
@@ -182,7 +181,7 @@ poll_plot_data$binom_v <- (poll_plot_data$p)*(100-poll_plot_data$p)/ president_p
 
 
 # 
-poll_plot_data %>%
+president_var <- poll_plot_data %>%
   ggplot(aes(x=binom_v)) +
   geom_density() +
   geom_vline(aes(xintercept = sigma2y),color = "red") +
@@ -191,24 +190,31 @@ poll_plot_data %>%
 
 ```
 
-```{r winning probability, include=F}
+```{r winning probability, include=F, eval=T}
 sims <- jags_sims_mv$BUGSoutput$sims.list$theta[,,1]
 colnames(sims) <- states
-sims %>% {.>50} %>% colMeans()
+swing_state_win_prob <- as.data.frame(sims %>% {.>50} %>% colMeans())
+names(swing_state_win_prob) <- "Winning Probability"
+swing_state_win_prob <- kable(swing_state_win_prob, caption = "Swing State Winning Probability")
+
+swing_state_share_interval <- kable(colQuantiles(sims, probs=c(0.025, 0.5, 0.975)), caption = "Swing State Share Percentage Interval Estimate")
+
 ```
 
 ```{r ec vote distribution, echo=F}
 #in other states: Biden: 232-13, Trump: 306-29-18-15-10-20
 # c_ex_votes <- 232-13; t_ex_votes <- 306-29-18-15-10-20
 ec_votes <- ((sims>50) %*% diag(c(0,29,15,18,20,13,10))) %>% rowSums() + 232
-hist(ec_votes)
+ec_vote_mean <- mean(ec_votes)
+ec_vote_qt <- quantile(ec_votes, probs=c(0.025, 0.975))
+ec_vertical_lines <- c(ec_vote_qt[1], ec_vote_mean, ec_vote_qt[2])
+ec_dis <- ggplot() + aes(ec_votes)+ geom_histogram(binwidth=5) + ggtitle("Electorial College Vote Share Distribution") + geom_vline(xintercept = ec_vertical_lines )
+ec_interval <- kable(quantile(ec_votes, probs = c(0.025, 0.975) ), caption="EC Vote Total")
+
+swing_state_prob <- mean({ec_votes > 270})
 ```
 
-```{r i don know, include=F }
-idkSenate <- sims[sims[,4]<50,] %>% {.>50} %>% colMeans()
-mean(idkSenate)
 
-```
 
 ```{r some random functions, include=F}
 reorder_cormat <- function(cormat){
@@ -284,16 +290,6 @@ N_days <- senator_t %>% max
 
 ```
 
-```{r}
-sort(states)
-```
-Hawaii
-
-Illinois
-
-South Dakota
-
-
 
 ```{r mv_model-senator, include=F}
 model_senator <- function(){
@@ -345,7 +341,7 @@ jags_sims_senator <- jags(data = senator_jags_data,
                           n.iter = 100)
 ```
 
-```{r plot senator for all state, eval=F}
+```{r plot senator for all state, eval=T, include=F}
 senator_poll_plot_data <- tibble(y=senator_jags_data$y,
                                  t=senator_jags_data$t %>% as.integer(),
                                  state = states[senator_jags_data$r])
@@ -358,7 +354,7 @@ senator_beta_plot_data <- lapply(1:N_states,function(st){
              ub=apply(sims,2,quantile,probs=.975))}) %>% 
   bind_rows()
 
-left_join(senator_beta_plot_data,senator_poll_plot_data) %>% 
+senator_trend <- left_join(senator_beta_plot_data,senator_poll_plot_data) %>% 
   ggplot(aes(x=t)) + 
   geom_line(aes(y=mean)) + 
   geom_ribbon(aes(ymin = lb,ymax = ub),alpha = .2) + 
@@ -369,13 +365,13 @@ left_join(senator_beta_plot_data,senator_poll_plot_data) %>%
 
 ```
 
-```{r plot senator prob for all state, eval=F}
+```{r plot senator prob for all state, eval=T}
 senator_poll_plot_data$p <- jags_sims_senator$BUGSoutput$mean$p
 senator_poll_plot_data$sigma2y <- jags_sims_senator$BUGSoutput$mean$sigma2_y[senator_jags_data$r]
 senator_poll_plot_data$binom_v <- (senator_poll_plot_data$p)*(100-senator_poll_plot_data$p)/ senator$sample_size
 
 
-senator_poll_plot_data %>%
+senator_var <- senator_poll_plot_data %>%
   ggplot(aes(x=binom_v)) +
   geom_density() +
   geom_vline(aes(xintercept = sigma2y),color = "red") +
@@ -387,28 +383,34 @@ senator_poll_plot_data %>%
 ```{r all state senator expectation, include=F}
 senator_sims <- jags_sims_senator$BUGSoutput$sims.list$theta[,,1]
 colnames(senator_sims) <- states
-senator_sims %>% {.>50} %>% colMeans()
+senator_all_state_prob <- as.data.frame(senator_sims %>% {.>50} %>% colMeans())
+names(senator_all_state_prob) <- "Winning Probability"
+senator_all_state_prob <- kable(senator_all_state_prob, caption = "Senator All State Winning Probability")
+swing_state_share_interval <- kable(colQuantiles(senator_sims, probs=c(0.025, 0.5, 0.975)), caption = "Senator All State Vote Share Percentage Interval Estimate")
+
+
 ```
 
-```{r answer for North Carolina}
+```{r answer for North Carolina, include=F}
 temp <- as.data.frame( t(senator_sims %>% {.>50} %>% colMeans()) )
-temp$`North Carolina`
+
+longnames <- NULL
+interval_nc_senate <- quantile(as.data.frame(senator_sims)$`North Carolina`,  probs = c(0.025, 0.5, 0.975))
+nc_senate_share_qt <- kable(interval_nc_senate, caption="North Carolina Vote Share Interval Estimate")
+mean_nc_senate_prob <- temp$`North Carolina`
+nc_senate_share <- ggplot() + aes(interval_nc_senate)+ geom_histogram() + geom_density(fill="blue", alpha=0.3) + ggtitle("NC Tom Tillis Voter Share Distribution") + geom_vline(xintercept = mean(interval_nc_senate))
+
+tom_win_prob <- mean({as.data.frame(senator_sims)$`North Carolina` > 50})
+
 ```
 
-```{r}
-# names(senator_sims)
+```{r prob senator remains in control of republican, include=F}
 
-```
+total_rep_senate <-  as.numeric(( { senator_sims >50 } * 2) %>% rowSums() +2)
 
-```{r prob senator remains in control of republican}
-#need to change!!
-#in other states: Biden: 232-13, Trump: 306-29-18-15-10-20
-# c_ex_votes <- 232-13; t_ex_votes <- 306-29-18-15-10-20
-total_rep_senate <-  ( { senator_sims>50 } * 2) %>% rowSums() + 2
-hist(total_rep_senate)
+senate_dis <- ggplot() + aes(total_rep_senate)+ geom_histogram(binwidth=2) + ggtitle("Distribution of Senators In REP of Whole Nation") + geom_vline(xintercept = mean(total_rep_senate))
 
-
-sum( rowMeans(senator_sims* 48/50 + 2)>50   ) / dim(senator_sims)[1]
+rep_senate_prob <- mean( { total_rep_senate > 50}   ) 
 ```
 
 
@@ -648,9 +650,61 @@ house_poll_plot_data %>%
 ```
 
 
-```{r}
+```{r house result, include=F}
+
+
 house_sims <- jags_sims_house$BUGSoutput$sims.list$theta[,,1]
 colnames(house_sims) <- cong_dist
-house_sims %>% {.>50} %>% colMeans()
+house_all_cong_dist_prob <- as.data.frame(house_sims %>% {.>50} %>% colMeans())
+
+# target <- c("district 1", 
+#             "district 2", 
+#             "district 3", 
+#             "district 4",
+#             "district 5", 
+#             "district 6", 
+#             "district 7", 
+#             "district 8",
+#             "district 9", 
+#             "district 10", 
+#             "district 11", 
+#             "district 12",
+#             "district 13")
+
+names(house_all_cong_dist_prob) <- "Winning Probability"
+
+house_all_cong_dist_prob <- kable(house_all_cong_dist_prob, caption = "House All Congressional District Winning Probability (REP)")
+house_all_cong_dist_share_interval <- kable(colQuantiles(house_sims, probs=c(0.025, 0.5, 0.975)), caption = "house All State Vote Share Percentage Interval Estimate (REP)")
+```
+
+```{r output all results, echo=F}
+swing_state_traj #plot swing state DEM party
+president_var #plot president variance
+swing_state_prob #kable swing state probility of biden win
+ec_dis #plot electorial college vote distribution
+ec_interval #kable of ec vote CI
+
+swing_state_win_prob # Kable Swing State winning probability
+swing_state_share_interval # Kable Swing State share interval
+
+
+
+senator_trend # plot senator trend for 47 states
+senator_var # plot senator variance for 47 states
+
+senator_all_state_prob # kable all state senate winning probability
+swing_state_share_interval # kable all state senate vote share interval
+
+
+nc_senate_share_qt # Kable Tom Tillis share pt
+nc_senate_share # plot Tom Tillis Share
+tom_win_prob # Tom Win Prob
+
+rep_senate_prob # probability REP controls senate
+senate_dis # plot total REP senators
+
+
+house_all_cong_dist_prob # Kable congressional district REP winning probability
+house_all_cong_dist_share_interval # Kable congressional district REP share pct interval
 ```
 
