@@ -1,9 +1,15 @@
 ---
-title: "Election Prediction"
-author: "Bob, Becca, Rena, Grace"
-date: "10/16/2020"
+title: "Case Study 3: Election Prediction"
+author: "Bob Ding, Becca Erenbaum, Grace O'Leary, Rena Zhong"
+date: "11/1/2020"
 output: pdf_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 7, fig.height = 5)
+options(digits = 4)
+```
 
 ```{r packages, include=F}
 library(tidyverse)
@@ -11,8 +17,8 @@ library(R2jags)
 library(ggplot2)
 library(knitr)
 library(matrixStats)
+library(gridExtra)
 ```
-
 
 # 1. Introduction
 
@@ -36,9 +42,18 @@ In this report we aim to:
 
 Taking into account the anomaly that was the 2016 election, we chose to use the Linzer model to best account for slight and unexpected changes leading up to election day. In Section 2 of this report we will discuss datasets used for all tasks, including a brief exploratory data analysis. In Section 3, we formulate models and methodologies that answer all the research questions. Section 4 will present model diagnostic and sanity check validation of prediction. Then, in section 5 we present the major results of our analysis. Section 6 will be focused on conducting sensitivity analysis to test data imputation hypothesis and prior choices.
 
-
-
 # 2. Data Source and EDA
+
+```{r load-data, include=FALSE, warning=FALSE}
+president_polls_2020 <- read_csv("2020 US presidential election polls - all_polls.csv") %>%
+    mutate(days_to_election = as.Date("2020/11/03","%Y/%m/%d" ) - as.Date(end.date, "%m/%d/%Y"),
+         state = ifelse(state == "--","US",state),
+         y = biden/(biden + trump)*100)
+
+house_polls <- read_csv("house_polls.csv")
+senate_polls <- read_csv("senate_polls.csv")
+ncvhis_Statewide_small <- read_rds("ncvhis_Statewide_small.rds")
+```
 
 ## 2.1 Description of Data
 
@@ -46,14 +61,82 @@ In order to answer these questions, we used a total of four datasets: senate pol
 
 The North Carolina voter history dataset contains information on the 2016 elections and about how voters voted (method, election, county, party affiliation, precinct). This will help us model and identify potential voters in 2020 (Interim report). On top of the created model, we used the 2020 voter registration snapshot dataset to identify potential voters, and use this information as additional input to model house polls results.
 
-
 ## 2.2 Exploratory Data Analysis
-
 
 To get a basic understanding of the four datasets we were working with, we went through the data to understand what we were working with. In the senate and the house polls, we explored the variables of: methodology of the poll, the state in which the poll was conducted, which party the candidate was, and the percentage of the poll. In the presidential election polls, we explored similar variables of: method of poll and state, in addition to the margin between Biden and Trump. Because all three of these datasets had similar variables, we are able to compare them to each other. In Figure A, we can see how the methods of polling were distributed between the house, senate, and presidential polls. In Figure B, we can see how each poll's distribution of which state was polled, and in Figure C, we can see how the house and senate polls' candidate party are different from each other. Finally, in Figure D, we can see the distribution of the margin between Biden and Trump.
 
 To explore the North Carolina voter history dataset, we looked at variables such as method, county, and party affiliation of the voter. We can see in Figure E that the majority of North Carolina voters are from two counties, Wake and Mecklenberg. Party affiliation and the method that the voters used are included in our appendix.
 
+```{r eda-methods, echo=FALSE, fig.cap="Figure A: Poll Methodology"}
+house_method <- ggplot(house_polls, mapping = aes(x=methodology)) +
+  geom_bar() +
+  labs(title = "Poll Methodology Distribution", subtitle = "House Polls",
+       x = "Method Type") +
+  theme(axis.text.x = element_text(angle = 45))
+house_method
+
+senate_method <- ggplot(senate_polls, mapping = aes(x=methodology)) +
+  geom_bar() +
+  labs(title = "Poll Methodology Distribution", subtitle = "Senate Polls",
+       x = "Method Type") +
+  theme(axis.text.x = element_text(angle = 45))
+senate_method
+
+presidential_method <-ggplot(president_polls_2020, mapping = aes(x=mode)) +
+  geom_bar() +
+  labs(title = "Poll Methodology Distribution", subtitle = "Presidential Polls",
+       x = "Method Type") +
+  theme(axis.text.x = element_text(angle = 45))
+presidential_method
+
+grid.arrange(house_method, senate_method, presidential_method, ncol=2)
+```
+
+```{r eda-state, echo=FALSE, fig.cap="Figure B: Polls State Distribution"}
+house_state <-ggplot(house_polls, mapping = aes(x=state)) +
+  geom_bar() +
+  labs(title = "Poll State Distribution", subtitle = "House Polls",
+       x = "State") +
+  theme(axis.text.x = element_text(angle = 45))
+house_state
+
+senate_state <-ggplot(house_polls, mapping = aes(x=state)) +
+  geom_bar() +
+  labs(title = "Poll State Distribution", subtitle = "Senate Polls",
+       x = "State") +
+  theme(axis.text.x = element_text(angle = 45))
+senate_state
+
+presidential_state <-ggplot(president_polls_2020, mapping = aes(x=state)) +
+  geom_bar() + 
+  labs(title = "Poll State Distribution", subtitle = "Presidential Polls",
+       x = "State") +
+  theme(axis.text.x = element_text(angle = 45))
+presidential_state
+```
+
+```{r eda-house-senate-polls, echo=FALSE, fig.cap="Figure C: Candidate Party Polls"}
+house_candidate <-ggplot(house_polls, mapping = aes(x=candidate_party)) +
+  geom_bar() +
+  labs(title = "Poll Candidate Party Distribution", subtitle = "House Polls",
+       x = "Party Affiliation") +
+  theme(axis.text.x = element_text(angle = 45))
+house_candidate
+
+senate_candidate <-ggplot(senate_polls, mapping = aes(x=candidate_party)) +
+  geom_bar() +
+  labs(title = "Poll Candidate Party Distribution", subtitle = "Senate Polls",
+       x = "Party Affiliation") +
+  theme(axis.text.x = element_text(angle = 45))
+senate_candidate
+```
+
+```{r eda-biden, echo=FALSE, fig.cap="Figure D: Biden Margin"}
+biden_margin <-ggplot(president_polls_2020, mapping = aes(x=biden_margin)) +
+  geom_bar() +
+  labs(title = "Biden Margin", x = "Range")
+biden_margin
+```
 
 # 3. Model Formulation
 
@@ -81,14 +164,9 @@ Where $k$ index the polls, $i$ index the states, and $t$ index the date. $i[k]$ 
 
 
 ```{r data president, include=F}
-president_polls_2020 <- read_csv("2020 US presidential election polls - all_polls.csv") %>% 
-  mutate(days_to_election = as.Date("2020/11/03","%Y/%m/%d" ) - as.Date(end.date, "%m/%d/%Y"),
-         state = ifelse(state == "--","US",state),
-         y = biden/(biden + trump)*100)
-
 # president_polls_2020 <- subset(president_polls_2020, days_to_election < 200)
 president_polls_2020 <- president_polls_2020 %>% 
-  filter(days_to_election <= 200,state %in% c("US","WI","OH","PA","NC","FL","VA"))
+  filter(days_to_election <= 200, state %in% c("US","WI","OH","PA","NC","FL","VA"))
 
 states <- president_polls_2020$state %>% unique
 
@@ -102,8 +180,6 @@ N_days <- t %>% max
 
 jags_data <- list(y=y,t=t,r=r,
                   N_polls=N_polls,N_states=N_states,N_days=N_days)
-
-
 ```
 
 ```{r mv_model-president, include=F}
@@ -121,7 +197,7 @@ model_mv <- function(){
   
   #optional: theta[1:N_states,1] ~ dmnorm(mu0,s0) #define mu0 and s0 in your jags_data object
   
-  #Use your hierarhciacl prior for sigma2_y from before 
+  #Use your hierarchical prior for sigma2_y from before 
   for(j in 1:N_states){
       sigma2_y[j] = 1/sigma2_y_inv[j]
       sigma2_y_inv[j] ~ dgamma(nu_y,nu_y*tau_y) 
