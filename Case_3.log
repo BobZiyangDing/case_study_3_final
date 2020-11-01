@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.1)  1 NOV 2020 16:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.1)  1 NOV 2020 18:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -835,25 +835,25 @@ LaTeX Warning: Label `tab:house result' multiply defined.
 )
 \openout1 = `Case_3.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 146.
-LaTeX Font Info:    ... okay on input line 146.
-Package hyperref Info: Link coloring OFF on input line 146.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 147.
+LaTeX Font Info:    ... okay on input line 147.
+Package hyperref Info: Link coloring OFF on input line 147.
 
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.st
 y
@@ -869,9 +869,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count321
 )
-LaTeX Info: Redefining \ref on input line 146.
-LaTeX Info: Redefining \pageref on input line 146.
-LaTeX Info: Redefining \nameref on input line 146.
+LaTeX Info: Redefining \ref on input line 147.
+LaTeX Info: Redefining \pageref on input line 147.
+LaTeX Info: Redefining \nameref on input line 147.
 (./Case_3.out) (./Case_3.out)
 \@outlinefile=\write4
 \openout4 = `Case_3.out'.
@@ -934,202 +934,217 @@ Package caption Info: threeparttable package is loaded.
 Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-48.
+49.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-48.
+49.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 148
+LaTeX Font Info:    Trying to load font information for U+msa on input line 149
 .
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 148
+LaTeX Font Info:    Trying to load font information for U+msb on input line 149
 .
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-148.
+149.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for U+wasy on input line 14
-8.
+9.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/wasysym/uwasy.fd
 File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 )
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-89.
+90.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 ) [1
 
 {c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex
 .map}]
-<Case_3_files/figure-latex/eda-methods-1.pdf, id=47, 650.43pt x 289.08pt>
+<Case_3_files/figure-latex/eda-methods-1.pdf, id=99, 650.43pt x 289.08pt>
 File: Case_3_files/figure-latex/eda-methods-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-methods-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-methods-1.pdf  used on i
-nput line 267.
+nput line 258.
 (pdftex.def)             Requested size: 469.76817pt x 208.78584pt.
-<Case_3_files/figure-latex/eda-state-1.pdf, id=48, 867.24pt x 289.08pt>
+<Case_3_files/figure-latex/eda-state-1.pdf, id=100, 867.24pt x 289.08pt>
 File: Case_3_files/figure-latex/eda-state-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-state-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-state-1.pdf  used on inp
-ut line 276.
+ut line 272.
 (pdftex.def)             Requested size: 469.75827pt x 156.58607pt.
-<Case_3_files/figure-latex/eda-house-senate-polls-1.pdf, id=49, 578.16pt x 216.
-81pt>
+[2 <./Case_3_files/figure-latex/eda-methods-1.pdf>]
+<Case_3_files/figure-latex/eda-house-senate-polls-1.pdf, id=112, 578.16pt x 216
+.81pt>
 File: Case_3_files/figure-latex/eda-house-senate-polls-1.pdf Graphic file (type
  pdf)
 <use Case_3_files/figure-latex/eda-house-senate-polls-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-house-senate-polls-1.pdf
-  used on input line 285.
+  used on input line 281.
 (pdftex.def)             Requested size: 469.75385pt x 176.15768pt.
-<Case_3_files/figure-latex/eda-biden-1.pdf, id=50, 289.08pt x 216.81pt>
+<Case_3_files/figure-latex/eda-biden-1.pdf, id=113, 289.08pt x 180.675pt>
 File: Case_3_files/figure-latex/eda-biden-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-biden-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-biden-1.pdf  used on inp
-ut line 294.
+ut line 293.
+(pdftex.def)             Requested size: 289.07928pt x 180.67455pt.
+[3 <./Case_3_files/figure-latex/eda-state-1.pdf> <./Case_3_files/figure-latex/e
+da-house-senate-polls-1.pdf>]
+<Case_3_files/figure-latex/eda-ncmap-1.pdf, id=131, 289.08pt x 216.81pt>
+File: Case_3_files/figure-latex/eda-ncmap-1.pdf Graphic file (type pdf)
+<use Case_3_files/figure-latex/eda-ncmap-1.pdf>
+Package pdftex.def Info: Case_3_files/figure-latex/eda-ncmap-1.pdf  used on inp
+ut line 306.
 (pdftex.def)             Requested size: 289.09251pt x 216.81938pt.
-[2] [3 <./Case_3_files/figure-latex/eda-methods-1.pdf> <./Case_3_files/figure-l
-atex/eda-state-1.pdf> <./Case_3_files/figure-latex/eda-house-senate-polls-1.pdf
->] [4 <./Case_3_files/figure-latex/eda-biden-1.pdf>]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 4
-13.
+[4 <./Case_3_files/figure-latex/eda-biden-1.pdf> <./Case_3_files/figure-latex/e
+da-ncmap-1.pdf>] [5] [6] [7]
+Overfull \hbox (259.60635pt too wide) in paragraph at lines 575--577
+[]\T1/lmr/m/n/10 [3] []$https : / / projects . economist . com / us -[] 2020 -[
+] forecast / president / how -[] this -[] works ? fbclid = IwAR2DIgVtL4uVjyKiVr
+pj9f3KMiUyOzvmsTKHeBX5jgAbxS5VHsaw0TyOOi8$[] 
+ []
+
+[8]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 5
+93.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<Case_3_files/figure-latex/output all results-1.pdf, id=99, 505.89pt x 361.35pt
->
+<Case_3_files/figure-latex/output all results-1.pdf, id=188, 505.89pt x 361.35p
+t>
 File: Case_3_files/figure-latex/output all results-1.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-1.pdf  us
-ed on input line 417.
+ed on input line 597.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/output all results-2.pdf, id=100, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-2.pdf, id=189, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-2.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-2.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-2.pdf  us
-ed on input line 418.
+ed on input line 598.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[5] [6 <./Case_3_files/figure-latex/output all results-1.pdf>]
-<Case_3_files/figure-latex/output all results-3.pdf, id=120, 505.89pt x 361.35p
+[9 <./Case_3_files/figure-latex/output all results-1.pdf>]
+<Case_3_files/figure-latex/output all results-3.pdf, id=204, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-3.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-3.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-3.pdf  us
-ed on input line 424.
+ed on input line 604.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[7 <./Case_3_files/figure-latex/output all results-2.pdf>] [8 <./Case_3_files/f
-igure-latex/output all results-3.pdf>]
-<Case_3_files/figure-latex/output all results-4.pdf, id=144, 505.89pt x 361.35p
+[10 <./Case_3_files/figure-latex/output all results-2.pdf>] [11 <./Case_3_files
+/figure-latex/output all results-3.pdf>]
+<Case_3_files/figure-latex/output all results-4.pdf, id=227, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-4.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-4.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-4.pdf  us
-ed on input line 511.
+ed on input line 691.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/output all results-5.pdf, id=145, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-5.pdf, id=228, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-5.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-5.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-5.pdf  us
-ed on input line 517.
+ed on input line 697.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[9 <./Case_3_files/figure-latex/output all results-4.pdf>] [10 <./Case_3_files/
-figure-latex/output all results-5.pdf>] [11]
-<Case_3_files/figure-latex/output all results-6.pdf, id=177, 505.89pt x 361.35p
+[12 <./Case_3_files/figure-latex/output all results-4.pdf>] [13 <./Case_3_files
+/figure-latex/output all results-5.pdf>] [14]
+<Case_3_files/figure-latex/output all results-6.pdf, id=260, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-6.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-6.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-6.pdf  us
-ed on input line 667.
+ed on input line 847.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[12]
-<Case_3_files/figure-latex/output all results-7.pdf, id=185, 505.89pt x 361.35p
+[15]
+<Case_3_files/figure-latex/output all results-7.pdf, id=268, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-7.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-7.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-7.pdf  us
-ed on input line 677.
+ed on input line 857.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[13 <./Case_3_files/figure-latex/output all results-6.pdf>] [14 <./Case_3_files
+[16 <./Case_3_files/figure-latex/output all results-6.pdf>] [17 <./Case_3_files
 /figure-latex/output all results-7.pdf>]
-<Case_3_files/figure-latex/output all results-8.pdf, id=211, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-8.pdf, id=294, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-8.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-8.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-8.pdf  us
-ed on input line 745.
+ed on input line 925.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/output all results-9.pdf, id=212, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-9.pdf, id=295, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-9.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-9.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-9.pdf  us
-ed on input line 746.
+ed on input line 926.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
 
-Package xcolor Warning: Incompatible color definition on input line 748.
+Package xcolor Warning: Incompatible color definition on input line 928.
 
-[15 <./Case_3_files/figure-latex/output all results-8.pdf>]
+[18 <./Case_3_files/figure-latex/output all results-8.pdf>]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 750.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 930.
 
-Package xcolor Warning: Incompatible color definition on input line 752.
-
-
-Package xcolor Warning: Incompatible color definition on input line 752.
+Package xcolor Warning: Incompatible color definition on input line 932.
 
 
-Package xcolor Warning: Incompatible color definition on input line 758.
+Package xcolor Warning: Incompatible color definition on input line 932.
 
 
-Package xcolor Warning: Incompatible color definition on input line 762.
+Package xcolor Warning: Incompatible color definition on input line 938.
 
 
-Package xcolor Warning: Incompatible color definition on input line 762.
+Package xcolor Warning: Incompatible color definition on input line 942.
 
 
-Package xcolor Warning: Incompatible color definition on input line 768.
+Package xcolor Warning: Incompatible color definition on input line 942.
 
 
-Package xcolor Warning: Incompatible color definition on input line 772.
+Package xcolor Warning: Incompatible color definition on input line 948.
 
 
-Package xcolor Warning: Incompatible color definition on input line 772.
+Package xcolor Warning: Incompatible color definition on input line 952.
 
-[16 <./Case_3_files/figure-latex/output all results-9.pdf>] (./Case_3.aux)
+
+Package xcolor Warning: Incompatible color definition on input line 952.
+
+[19 <./Case_3_files/figure-latex/output all results-9.pdf>] (./Case_3.aux)
 Package rerunfilecheck Info: File `Case_3.out' has not changed.
-(rerunfilecheck)             Checksum: 64B3544955939CFC676559F3C04884B1;1403.
+(rerunfilecheck)             Checksum: BF77A4F44345F68DC6B58A769A520164;4004.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 18984 strings out of 481433
- 294625 string characters out of 5918906
- 611822 words of memory out of 5000000
- 35310 multiletter control sequences out of 15000+600000
+ 19036 strings out of 481433
+ 295645 string characters out of 5918906
+ 611543 words of memory out of 5000000
+ 35344 multiletter control sequences out of 15000+600000
  616450 words of font info for 125 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 66i,9n,74p,319b,376s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 66i,9n,74p,358b,376s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.en
 c}{c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/mnsymbol/Mn
 SymbolC.enc}{c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/l
@@ -1150,10 +1165,10 @@ b><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17
 r7.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/
 lmtk10.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public
 /lm/lmtt10.pfb>
-Output written on Case_3.pdf (16 pages, 1163875 bytes).
+Output written on Case_3.pdf (19 pages, 1190078 bytes).
 PDF statistics:
- 297 PDF objects out of 1000 (max. 8388607)
- 238 compressed objects within 3 object streams
- 37 named destinations out of 1000 (max. 500000)
- 130 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 383 PDF objects out of 1000 (max. 8388607)
+ 317 compressed objects within 4 object streams
+ 54 named destinations out of 1000 (max. 500000)
+ 239 words of extra memory for PDF output out of 10000 (max. 10000000)
 
