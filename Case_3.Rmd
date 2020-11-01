@@ -318,7 +318,7 @@ swing_state_win_prob <- as.data.frame(sims %>% {.>52} %>% colMeans())
 names(swing_state_win_prob) <- "Winning Probability"
 swing_state_win_prob <- kable(swing_state_win_prob, caption = "Swing State Winning Probability")
 
-swing_state_share_interval_president <- kable(colQuantiles(sims+2, probs=c(0.025, 0.5, 0.975)), caption = "Swing State Share Percentage Interval Estimate (Biden)")
+swing_state_share_interval_president <- kable(colQuantiles(sims-1, probs=c(0.025, 0.5, 0.975)), caption = "Swing State Share Percentage Interval Estimate (Biden)")
 
 
 ```
