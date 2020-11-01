@@ -2,7 +2,31 @@
 title: "Case Study 3: Election Prediction"
 author: "Bob Ding, Becca Erenbaum, Grace O'Leary, Rena Zhong"
 date: "11/1/2020"
-output: pdf_document
+header-includes:
+  - \usepackage{bm}
+  - \usepackage{amsmath}
+  - \usepackage{nccmath}
+  - \usepackage{amssymb}
+  - \usepackage{dsfont}
+  - \usepackage{media9}
+  - \usepackage{graphicx}
+  - \usepackage{MnSymbol,wasysym}
+  - \usepackage{subcaption}     
+  - \usepackage{textcomp}
+  - \usepackage{wrapfig}
+  - \usepackage{enumitem}
+  - \usepackage{fancyhdr}
+  - \usepackage{float}
+  - \usepackage{bm}
+  - \usepackage{afterpage}
+  - \usepackage{hyperref}
+  - \usepackage{lscape}
+  - \usepackage{tabularx}
+  - \usepackage[ruled,vlined]{algorithm2e}
+  - \usepackage{xcolor}
+output: 
+  pdf_document:
+    fig_caption: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -20,6 +44,7 @@ pkg_test("ggplot2")
 pkg_test("knitr")
 pkg_test("matrixStats")
 pkg_test("gridExtra")
+pkg_test("kableExtra")
 ```
 
 # 1. Introduction
@@ -225,6 +250,76 @@ model_mv <- function(){
   sigma2_0 = 1/sigma2_0_inv
   sigma2_0_inv ~ dgamma(.5,.5)
 }
+
+
+```
+
+
+
+```{r mv_model-president sensitivity, include=F}
+model_mv_2 <- function(){
+  for(k in 1:N_polls){
+    y[k] ~ dnorm(p[k],1/sigma2_y[r[k]]) #note no longer binomial
+    p[k] = theta[r[k],t[k]]
+  }
+  for(j in 2:N_days){
+    theta[1:N_states,j] ~ dmnorm(theta[1:N_states,j-1],Phi)
+  }
+  Phi ~ dwish(I_states,N_states+1) #fill in wishart parameters, google JAGS wishart distribution should turn it up
+  Sigma = inverse(Phi)
+  #which, Phi or Sigma is the covariance and which is the precision? 
+  
+  #optional: theta[1:N_states,1] ~ dmnorm(mu0,s0) #define mu0 and s0 in your jags_data object
+  
+  #Use your hierarchical prior for sigma2_y from before 
+  for(j in 1:N_states){
+      sigma2_y[j] = 1/sigma2_y_inv[j]
+      sigma2_y_inv[j] ~ dgamma(nu_y,nu_y*tau_y) 
+      
+      theta[j,1] ~ dnorm(mu0,pow(sigma2_0,-1))
+  }
+  nu_y ~ dunif(0,10)
+  tau_y ~ dunif(0,10)
+  
+  nu_beta ~ dunif(0,10)
+  tau_beta ~ dunif(0,10)
+  
+  mu0 ~ dnorm(50,pow(5,-2))
+  sigma2_0 = 1/sigma2_0_inv
+  sigma2_0_inv ~ dgamma(.5,.5)
+}
+
+model_mv_3 <- function(){
+  for(k in 1:N_polls){
+    y[k] ~ dnorm(p[k],1/sigma2_y[r[k]]) #note no longer binomial
+    p[k] = theta[r[k],t[k]]
+  }
+  for(j in 2:N_days){
+    theta[1:N_states,j] ~ dmnorm(theta[1:N_states,j-1],Phi)
+  }
+  Phi ~ dwish(I_states,N_states+1) #fill in wishart parameters, google JAGS wishart distribution should turn it up
+  Sigma = inverse(Phi)
+  #which, Phi or Sigma is the covariance and which is the precision? 
+  
+  #optional: theta[1:N_states,1] ~ dmnorm(mu0,s0) #define mu0 and s0 in your jags_data object
+  
+  #Use your hierarchical prior for sigma2_y from before 
+  for(j in 1:N_states){
+      sigma2_y[j] = 1/sigma2_y_inv[j]
+      sigma2_y_inv[j] ~ dgamma(nu_y,nu_y*tau_y) 
+      
+      theta[j,1] ~ dnorm(mu0,pow(sigma2_0,-1))
+  }
+  nu_y ~ dunif(0,1)
+  tau_y ~ dunif(0,1)
+  
+  nu_beta ~ dunif(0,1)
+  tau_beta ~ dunif(0,1)
+  
+  mu0 ~ dnorm(50,pow(2.5,-2))
+  sigma2_0 = 1/sigma2_0_inv
+  sigma2_0_inv ~ dgamma(.5,.5)
+}
 ```
 
 
@@ -238,7 +333,19 @@ jags_data$I_states <- diag(N_states)
 jags_sims_mv <- jags(data = jags_data,model.file = model_mv,parameters.to.save = c("theta","Sigma",
                                                                                 "p","sigma2_y"),
                   n.iter = total_MCMC_itr)
+
+#Sensitivity Check 2
+jags_sims_mv_2 <- jags(data = jags_data,model.file = model_mv,parameters.to.save = c("theta","Sigma",
+                                                                                "p","sigma2_y"),
+                  n.iter = total_MCMC_itr)
+
+#Sensitivity Check 3
+jags_sims_mv_3 <- jags(data = jags_data,model.file = model_mv,parameters.to.save = c("theta","Sigma",
+                                                                                "p","sigma2_y"),
+                  n.iter = total_MCMC_itr)
 ```
+
+
 
 ```{r mcmc president diagnostic, include=F}
 
@@ -269,7 +376,6 @@ trace_president_sigma <- ggplot(data=Result_data_president) +
 
 ```
 
-
 ```{r voting state plot, include=F, message=F}
 poll_plot_data <- tibble(y=jags_data$y,t=jags_data$t %>% as.integer(),state = states[jags_data$r])
 
@@ -293,8 +399,6 @@ swing_state_traj <- left_join(beta_plot_data,poll_plot_data) %>%
 
 ```
 
-
-
 ```{r plot implied variance, echo=F}
 poll_plot_data$p <- jags_sims_mv$BUGSoutput$mean$p
 poll_plot_data$sigma2y <- jags_sims_mv$BUGSoutput$mean$sigma2_y[jags_data$r]
@@ -315,17 +419,40 @@ president_var <- poll_plot_data %>%
 sims <- jags_sims_mv$BUGSoutput$sims.list$theta[,,1]
 colnames(sims) <- states
 swing_state_win_prob <- as.data.frame(sims %>% {.>52} %>% colMeans())
-names(swing_state_win_prob) <- "Winning Probability"
-swing_state_win_prob <- kable(swing_state_win_prob, caption = "Swing State Winning Probability")
+names(swing_state_win_prob) <- "Official Model"
 
-swing_state_share_interval_president <- kable(colQuantiles(sims-1, probs=c(0.025, 0.5, 0.975)), caption = "Swing State Share Percentage Interval Estimate (Biden)")
+swing_state_share_interval_president <- colQuantiles(sims-1, probs=c(0.025, 0.5, 0.975))
 
+sims_2 <- jags_sims_mv_2$BUGSoutput$sims.list$theta[,,1]
+colnames(sims_2) <- states
+swing_state_win_prob_2 <- as.data.frame(sims_2 %>% {.>52} %>% colMeans())
+names(swing_state_win_prob_2) <- "Informative Prior"
+
+swing_state_share_interval_president_2 <- colQuantiles(sims-1, probs=c(0.025, 0.5, 0.975))
+
+
+sims_3 <- jags_sims_mv_3$BUGSoutput$sims.list$theta[,,1]
+colnames(sims_3) <- states
+swing_state_win_prob_3 <- as.data.frame(sims_3 %>% {.>52} %>% colMeans())
+names(swing_state_win_prob_3) <- "Imputation Perturbation"
+
+swing_state_share_interval_president_3 <- colQuantiles(sims-1, probs=c(0.025, 0.5, 0.975))
+
+swing_state_win_prob <- kable(cbind(swing_state_win_prob, swing_state_win_prob_2, swing_state_win_prob_3), caption = "Swing State Winning Probability (Biden)")
+
+swing_state_share_interval_president <- cbind(swing_state_share_interval_president,
+                                                    swing_state_share_interval_president_2,
+                                                    swing_state_share_interval_president_3)
+
+
+swing_state_share_interval_president <- kbl(swing_state_share_interval_president, booktabs=T, caption = "Swing State Share Percentage Interval Estimate (Biden)") %>%
+  add_header_above(c(" " = 1, "Official Model" = 3, "Informative Prior" = 3, "Imputation Perturbation" = 3)) %>% 
+  kable_styling(latex_options = "striped") %>%
+  kable_styling(latex_options = "HOLD_position")
 
 ```
 
 ```{r ec vote distribution, echo=F}
-#in other states: Biden: 232-13, Trump: 306-29-18-15-10-20
-# c_ex_votes <- 232-13; t_ex_votes <- 306-29-18-15-10-20
 ec_votes <- ((sims>52) %*% diag(c(10,20, 29,38,16,16,15, 9, 18, 11, 6, 6, 4))) %>% rowSums() + 210
 ec_vote_mean <- mean(ec_votes)
 ec_vote_qt <- quantile(ec_votes, probs=c(0.025, 0.975))
@@ -335,8 +462,6 @@ ec_interval <- kable(quantile(ec_votes, probs = c(0.025, 0.975) ), caption="EC V
 
 swing_state_prob <- mean({ec_votes > 270})
 ```
-
-
 
 ```{r some random functions, include=F}
 reorder_cormat <- function(cormat){
@@ -369,7 +494,7 @@ get_heatmap <- function(cormat){
 }
 ```
 
-```{r cross state correlation, echo=F}
+```{r cross state correlation, include=F}
 cor_sims <- array(NA,dim = jags_sims_mv$BUGSoutput$sims.list$Sigma %>% dim)
 for(i in 1:dim(cor_sims)[1]){
   cor_sims[i,,] <- cov2cor(jags_sims_mv$BUGSoutput$sims.list$Sigma[i,,])
@@ -391,6 +516,23 @@ In this section, we're answering question 2 and 4 jointly: Predict whether the U
 
 ```{r make us senator data, include=F}
 senator <- read_csv("senate_polls.csv")
+non_electing_states <- c("Wisconsin",
+                         "Ohio",
+                         "Washington",
+                         "Maryland",
+                         "Pennsylvania",
+                         "California",
+                         "New York",
+                         "Hawaii",
+                         "Connecticut",
+                         "Nevada",
+                         "Indiana",
+                         "North Dakota",
+                         "Missouri",
+                         "Utah",
+                         "Vermont",
+                         "Florida")
+senator <- senator[! senator$state %in% non_electing_states ,]
 senator$days_to_election = as.Date(senator$election_date, "%m/%d/%Y") - as.Date(senator$end_date, "%m/%d/%Y")
 senator <- senator %>% filter(candidate_party %in% c("DEM","REP"))
 senator$state <- ifelse(senator$state == "NA","US",senator$state)
@@ -411,7 +553,6 @@ N_days <- senator_t %>% max
 
 
 ```
-
 
 ```{r mv_model-senator, include=F}
 model_senator <- function(){
@@ -449,6 +590,77 @@ model_senator <- function(){
 }
 ```
 
+```{r mv_model-senator sensitivity, include=F}
+model_senator_2 <- function(){
+  for(k in 1:N_polls)
+  {
+    y[k] ~ dnorm(p[k],1/sigma2_y[r[k]]) #note no longer binomial
+    p[k] = theta[r[k],t[k]]
+  }
+  for(j in 2:N_days)
+  {
+    theta[1:N_states,j] ~ dmnorm(theta[1:N_states,j-1],Phi)
+  }
+  Phi ~ dwish(I_states,N_states+1) #fill in wishart parameters, google JAGS wishart distribution should turn it up
+  Sigma = inverse(Phi)
+  #which, Phi or Sigma is the covariance and which is the precision? 
+  
+  #optional: theta[1:N_states,1] ~ dmnorm(mu0,s0) #define mu0 and s0 in your jags_data object
+  
+  #Use your hierarhciacl prior for sigma2_y from before 
+  for(j in 1:N_states){
+      sigma2_y[j] = 1/sigma2_y_inv[j]
+      sigma2_y_inv[j] ~ dgamma(nu_y,nu_y*tau_y) 
+      
+      theta[j,1] ~ dnorm(mu0,pow(sigma2_0,-1))
+  }
+  nu_y ~ dunif(0,10)
+  tau_y ~ dunif(0,10)
+  
+  nu_beta ~ dunif(0,10)
+  tau_beta ~ dunif(0,10)
+  
+  mu0 ~ dnorm(50,pow(5,-2))
+  sigma2_0 = 1/sigma2_0_inv
+  sigma2_0_inv ~ dgamma(.5,.5)
+}
+
+model_senator_3 <- function(){
+  for(k in 1:N_polls)
+  {
+    y[k] ~ dnorm(p[k],1/sigma2_y[r[k]]) #note no longer binomial
+    p[k] = theta[r[k],t[k]]
+  }
+  for(j in 2:N_days)
+  {
+    theta[1:N_states,j] ~ dmnorm(theta[1:N_states,j-1],Phi)
+  }
+  Phi ~ dwish(I_states,N_states+1) #fill in wishart parameters, google JAGS wishart distribution should turn it up
+  Sigma = inverse(Phi)
+  #which, Phi or Sigma is the covariance and which is the precision? 
+  
+  #optional: theta[1:N_states,1] ~ dmnorm(mu0,s0) #define mu0 and s0 in your jags_data object
+  
+  #Use your hierarhciacl prior for sigma2_y from before 
+  for(j in 1:N_states){
+      sigma2_y[j] = 1/sigma2_y_inv[j]
+      sigma2_y_inv[j] ~ dgamma(nu_y,nu_y*tau_y) 
+      
+      theta[j,1] ~ dnorm(mu0,pow(sigma2_0,-1))
+  }
+  nu_y ~ dunif(0,1)
+  tau_y ~ dunif(0,1)
+  
+  nu_beta ~ dunif(0,1)
+  tau_beta ~ dunif(0,1)
+  
+  mu0 ~ dnorm(50,pow(2.5,-2))
+  sigma2_0 = 1/sigma2_0_inv
+  sigma2_0_inv ~ dgamma(.5,.5)
+}
+```
+
+
 ```{r run jags senator,eval=TRUE,cache=TRUE, include=F}
 
 senator_jags_data <- list(y=senator_y,t=senator_t,r=senator_r,
@@ -460,7 +672,17 @@ senator_jags_data$I_states <- diag(N_states)
 jags_sims_senator <- jags(data = senator_jags_data,
                           model.file = model_senator,
                           parameters.to.save = c("theta","Sigma","p","sigma2_y"),
-                          n.iter = total_MCMC_itr)
+                          n.iter = total_MCMC_itr) #total_MCMC_itr
+
+jags_sims_senator_2 <- jags(data = senator_jags_data,
+                          model.file = model_senator_2,
+                          parameters.to.save = c("theta","Sigma","p","sigma2_y"),
+                          n.iter = total_MCMC_itr) #total_MCMC_itr
+
+jags_sims_senator_3 <- jags(data = senator_jags_data,
+                          model.file = model_senator_3,
+                          parameters.to.save = c("theta","Sigma","p","sigma2_y"),
+                          n.iter = total_MCMC_itr) #total_MCMC_itr
 ```
 
 ```{r mcmc senate diagnostic, include=F}
@@ -532,14 +754,40 @@ senator_var <- senator_poll_plot_data %>%
 ```
 
 ```{r all state senator expectation, include=F}
+
 senator_sims <- jags_sims_senator$BUGSoutput$sims.list$theta[,,1]
 colnames(senator_sims) <- states
 senator_all_state_prob <- as.data.frame(senator_sims %>% {.>48} %>% colMeans())
-names(senator_all_state_prob) <- "Winning Probability"
-senator_all_state_prob <- kable(senator_all_state_prob, caption = "Senator All State Winning Probability")
-swing_state_share_interval <- kable(colQuantiles(senator_sims, probs=c(0.025, 0.5, 0.975)), caption = "Senator All State Vote Share Percentage Interval Estimate")
+names(senator_all_state_prob) <- "Official Model"
+swing_state_share_interval <- colQuantiles(senator_sims, probs=c(0.025, 0.5, 0.975))
+
+senator_sims_2 <- jags_sims_senator_2$BUGSoutput$sims.list$theta[,,1]
+colnames(senator_sims_2) <- states
+senator_all_state_prob_2 <- as.data.frame(senator_sims_2 %>% {.>48} %>% colMeans())
+names(senator_all_state_prob_2) <- "Informative Prior"
+swing_state_share_interval_2 <- colQuantiles(senator_sims_2, probs=c(0.025, 0.5, 0.975))
+
+senator_sims_3 <- jags_sims_senator_3$BUGSoutput$sims.list$theta[,,1]
+colnames(senator_sims_3) <- states
+senator_all_state_prob_3 <- as.data.frame(senator_sims_3 %>% {.>48} %>% colMeans())
+names(senator_all_state_prob_3) <- "Imputation Perturbation"
+swing_state_share_interval_3 <- colQuantiles(senator_sims_3, probs=c(0.025, 0.5, 0.975))
 
 
+senator_all_state_prob <- kable(cbind(senator_all_state_prob,
+                                      senator_all_state_prob_2,
+                                      senator_all_state_prob_3), caption = "Senator All State Winning Probability (REP)")
+
+
+swing_state_share_interval <- cbind(swing_state_share_interval,
+                                    swing_state_share_interval_2,
+                                    swing_state_share_interval_3)
+
+
+swing_state_share_interval <- kbl(swing_state_share_interval, booktabs=T, caption = "Senator All State Vote Share Percentage Interval Estimate (REP") %>%
+  add_header_above(c(" " = 1, "Official Model" = 3, "Informative Prior" = 3, "Imputation Perturbation" = 3)) %>% 
+  kable_styling(latex_options = "striped") %>%
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 ```{r answer for North Carolina, include=F}
@@ -557,7 +805,7 @@ tom_win_prob <- mean({as.data.frame(senator_sims)$`North Carolina` > 48})
 
 ```{r prob senator remains in control of republican, include=F}
 
-total_rep_senate <-  as.numeric(( { senator_sims >48 } * 2) %>% rowSums() +2)
+total_rep_senate <-  as.numeric(( { senator_sims >48 } * 2) %>% rowSums() +2+13)
 
 senate_dis <- ggplot() + aes(total_rep_senate)+ geom_histogram(binwidth=2) + ggtitle("Distribution of Senators In REP of Whole Nation") + geom_vline(xintercept = mean(total_rep_senate))
 
@@ -743,7 +991,75 @@ model_house <- function(){
 ```
 
 
+```{r mv_model-house sensitivity, include=F}
+model_house_2 <- function(){
+  for(k in 1:N_polls)
+  {
+    y[k] ~ dnorm(p[k],1/sigma2_y[r[k]]) #note no longer binomial
+    p[k] = theta[r[k],t[k]]
+  }
+  for(j in 2:N_days)
+  {
+    theta[1:N_states,j] ~ dmnorm(theta[1:N_states,j-1],Phi)
+  }
+  Phi ~ dwish(I_states,N_states+1) #fill in wishart parameters, google JAGS wishart distribution should turn it up
+  Sigma = inverse(Phi)
+  #which, Phi or Sigma is the covariance and which is the precision? 
+  
+  #optional: theta[1:N_states,1] ~ dmnorm(mu0,s0) #define mu0 and s0 in your jags_data object
+  
+  #Use your hierarhciacl prior for sigma2_y from before 
+  for(j in 1:N_states){
+      sigma2_y[j] = 1/sigma2_y_inv[j]
+      sigma2_y_inv[j] ~ dgamma(nu_y,nu_y*tau_y) 
+      
+      theta[j,1] ~ dnorm(mu0,pow(sigma2_0,-1))
+  }
+  nu_y ~ dunif(0,10)
+  tau_y ~ dunif(0,10)
+  
+  nu_beta ~ dunif(0,10)
+  tau_beta ~ dunif(0,10)
+  
+  mu0 ~ dnorm(50,pow(5,-2))
+  sigma2_0 = 1/sigma2_0_inv
+  sigma2_0_inv ~ dgamma(.5,.5)
+}
 
+model_house_3 <- function(){
+  for(k in 1:N_polls)
+  {
+    y[k] ~ dnorm(p[k],1/sigma2_y[r[k]]) #note no longer binomial
+    p[k] = theta[r[k],t[k]]
+  }
+  for(j in 2:N_days)
+  {
+    theta[1:N_states,j] ~ dmnorm(theta[1:N_states,j-1],Phi)
+  }
+  Phi ~ dwish(I_states,N_states+1) #fill in wishart parameters, google JAGS wishart distribution should turn it up
+  Sigma = inverse(Phi)
+  #which, Phi or Sigma is the covariance and which is the precision? 
+  
+  #optional: theta[1:N_states,1] ~ dmnorm(mu0,s0) #define mu0 and s0 in your jags_data object
+  
+  #Use your hierarhciacl prior for sigma2_y from before 
+  for(j in 1:N_states){
+      sigma2_y[j] = 1/sigma2_y_inv[j]
+      sigma2_y_inv[j] ~ dgamma(nu_y,nu_y*tau_y) 
+      
+      theta[j,1] ~ dnorm(mu0,pow(sigma2_0,-1))
+  }
+  nu_y ~ dunif(0,1)
+  tau_y ~ dunif(0,1)
+  
+  nu_beta ~ dunif(0,1)
+  tau_beta ~ dunif(0,1)
+  
+  mu0 ~ dnorm(50,pow(2.5,-2))
+  sigma2_0 = 1/sigma2_0_inv
+  sigma2_0_inv ~ dgamma(.5,.5)
+}
+```
 
 
 ```{r run jags house,eval=TRUE,cache=TRUE, include=F}
@@ -756,6 +1072,18 @@ house_jags_data$I_states <- diag(N_states)
 #be sure to add your added parameters to parameters.to.save
 jags_sims_house <- jags(data = house_jags_data,
                           model.file = model_house,
+                          parameters.to.save = c("theta","Sigma","p","sigma2_y"),
+                          n.iter = total_MCMC_itr)
+
+
+jags_sims_house_2 <- jags(data = house_jags_data,
+                          model.file = model_house_2,
+                          parameters.to.save = c("theta","Sigma","p","sigma2_y"),
+                          n.iter = total_MCMC_itr)
+
+
+jags_sims_house_3 <- jags(data = house_jags_data,
+                          model.file = model_house_3,
                           parameters.to.save = c("theta","Sigma","p","sigma2_y"),
                           n.iter = total_MCMC_itr)
 ```
@@ -836,6 +1164,22 @@ house_poll_plot_data %>%
 house_sims <- jags_sims_house$BUGSoutput$sims.list$theta[,,1]
 colnames(house_sims) <- cong_dist
 house_all_cong_dist_prob <- as.data.frame(house_sims %>% {.>50} %>% colMeans())
+names(house_all_cong_dist_prob) <- "Official Model"
+house_all_cong_dist_share_interval <- colQuantiles(house_sims, probs=c(0.025, 0.5, 0.975))
+
+
+house_sims_2 <- jags_sims_house_2$BUGSoutput$sims.list$theta[,,1]
+colnames(house_sims_2) <- cong_dist
+house_all_cong_dist_prob_2 <- as.data.frame(house_sims_2 %>% {.>50} %>% colMeans())
+names(house_all_cong_dist_prob_2) <- "Informative Prior"
+house_all_cong_dist_share_interval_2 <- colQuantiles(house_sims_2, probs=c(0.025, 0.5, 0.975))
+
+
+house_sims_3 <- jags_sims_house_3$BUGSoutput$sims.list$theta[,,1]
+colnames(house_sims_3) <- cong_dist
+house_all_cong_dist_prob_3 <- as.data.frame(house_sims_3 %>% {.>50} %>% colMeans())
+names(house_all_cong_dist_prob_3) <- "Imputation Perturbation"
+house_all_cong_dist_share_interval_3 <- colQuantiles(house_sims_3, probs=c(0.025, 0.5, 0.975))
 
 # target <- c("district 1", 
 #             "district 2", 
@@ -850,11 +1194,23 @@ house_all_cong_dist_prob <- as.data.frame(house_sims %>% {.>50} %>% colMeans())
 #             "district 11", 
 #             "district 12",
 #             "district 13")
+# 
+# house_all_cong_dist_share_interval <- kable(colQuantiles(house_sims, probs=c(0.025, 0.5, 0.975)), caption = "house All State Vote Share Percentage Interval Estimate (REP)")
 
-names(house_all_cong_dist_prob) <- "Winning Probability"
 
-house_all_cong_dist_prob <- kable(house_all_cong_dist_prob, caption = "House All Congressional District Winning Probability (REP)")
-house_all_cong_dist_share_interval <- kable(colQuantiles(house_sims, probs=c(0.025, 0.5, 0.975)), caption = "house All State Vote Share Percentage Interval Estimate (REP)")
+house_all_cong_dist_prob <- kable(cbind(house_all_cong_dist_prob,
+                                        house_all_cong_dist_prob_2,
+                                        house_all_cong_dist_prob_3), 
+                                  caption = "House All Congressional District Winning Probability (REP)")
+
+house_all_cong_dist_share_interval <- cbind(house_all_cong_dist_share_interval,
+                                            house_all_cong_dist_share_interval_2,
+                                            house_all_cong_dist_share_interval_3)
+
+house_all_cong_dist_share_interval <- kbl(house_all_cong_dist_share_interval, booktabs=T, caption = "House All Congressional District Winning Probability (REP)") %>%
+  add_header_above(c(" " = 1, "Official Model" = 3, "Informative Prior" = 3, "Imputation Perturbation" = 3)) %>% 
+  kable_styling(latex_options = "striped") %>%
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 ```{r output all results, echo=F}

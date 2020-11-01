@@ -17,3 +17,4 @@ mcmcr
 knitr
 matrixStats
 gridExtra
+kableExtra
