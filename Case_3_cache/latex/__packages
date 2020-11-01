@@ -11,3 +11,9 @@ forcats
 coda
 rjags
 R2jags
+sp
+FedData
+mcmcr
+knitr
+matrixStats
+gridExtra

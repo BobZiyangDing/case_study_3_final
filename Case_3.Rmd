@@ -12,12 +12,14 @@ options(digits = 4)
 ```
 
 ```{r packages, include=F}
-library(tidyverse)
-library(R2jags)
-library(ggplot2)
-library(knitr)
-library(matrixStats)
-library(gridExtra)
+library(FedData)
+pkg_test("mcmcr")
+pkg_test("tidyverse")
+pkg_test("R2jags")
+pkg_test("ggplot2")
+pkg_test("knitr")
+pkg_test("matrixStats")
+pkg_test("gridExtra")
 ```
 
 # 1. Introduction
@@ -45,6 +47,8 @@ Taking into account the anomaly that was the 2016 election, we chose to use the 
 # 2. Data Source and EDA
 
 ```{r load-data, include=FALSE, warning=FALSE}
+
+total_MCMC_itr = 10000
 president_polls_2020 <- read_csv("2020 US presidential election polls - all_polls.csv") %>%
     mutate(days_to_election = as.Date("2020/11/03","%Y/%m/%d" ) - as.Date(end.date, "%m/%d/%Y"),
          state = ifelse(state == "--","Overall",state),
@@ -67,71 +71,77 @@ To get a basic understanding of the four datasets we were working with, we went 
 
 To explore the North Carolina voter history dataset, we looked at variables such as method, county, and party affiliation of the voter. We can see in Figure E that the majority of North Carolina voters are from two counties, Wake and Mecklenberg. Party affiliation and the method that the voters used are included in our appendix.
 
-```{r eda-methods, echo=FALSE, fig.cap="Figure A: Poll Methodology"}
+```{r eda-methods, echo=FALSE, fig.cap="Figure A: Poll Methodology", fig.align="center", fig.width=9, fig.height=4}
 house_method <- ggplot(house_polls, mapping = aes(x=methodology)) +
   geom_bar() +
   labs(title = "Poll Methodology Distribution", subtitle = "House Polls",
        x = "Method Type") +
-  theme(axis.text.x = element_text(angle = 45))
-house_method
+  theme(axis.text.x = element_text(angle = 90))
+# house_method
 
 senate_method <- ggplot(senate_polls, mapping = aes(x=methodology)) +
   geom_bar() +
   labs(title = "Poll Methodology Distribution", subtitle = "Senate Polls",
        x = "Method Type") +
-  theme(axis.text.x = element_text(angle = 45))
-senate_method
+  theme(axis.text.x = element_text(angle = 90))
+# senate_method
 
 presidential_method <-ggplot(president_polls_2020, mapping = aes(x=mode)) +
   geom_bar() +
   labs(title = "Poll Methodology Distribution", subtitle = "Presidential Polls",
        x = "Method Type") +
-  theme(axis.text.x = element_text(angle = 45))
-presidential_method
+  theme(axis.text.x = element_text(angle = 90))
+# presidential_method
 
-grid.arrange(house_method, senate_method, presidential_method, ncol=2)
+grid.arrange(house_method, senate_method, presidential_method, ncol=3)
 ```
 
-```{r eda-state, echo=FALSE, fig.cap="Figure B: Polls State Distribution"}
+```{r eda-state, echo=FALSE, fig.cap="Figure B: Polls State Distribution",fig.align="center", fig.width=12, fig.height=4}
 house_state <-ggplot(house_polls, mapping = aes(x=state)) +
   geom_bar() +
   labs(title = "Poll State Distribution", subtitle = "House Polls",
        x = "State") +
-  theme(axis.text.x = element_text(angle = 45))
-house_state
+  theme(axis.text.x = element_text(angle = 90))
+# house_state
 
 senate_state <-ggplot(house_polls, mapping = aes(x=state)) +
   geom_bar() +
   labs(title = "Poll State Distribution", subtitle = "Senate Polls",
        x = "State") +
-  theme(axis.text.x = element_text(angle = 45))
-senate_state
+  theme(axis.text.x = element_text(angle = 90))
+# senate_state
 
 presidential_state <-ggplot(president_polls_2020, mapping = aes(x=state)) +
   geom_bar() + 
   labs(title = "Poll State Distribution", subtitle = "Presidential Polls",
        x = "State") +
-  theme(axis.text.x = element_text(angle = 45))
-presidential_state
+  theme(axis.text.x = element_text(angle = 90))
+# presidential_state
+
+grid.arrange(house_state, senate_state, presidential_state, ncol=3)
+
 ```
 
-```{r eda-house-senate-polls, echo=FALSE, fig.cap="Figure C: Candidate Party Polls"}
+```{r eda-house-senate-polls, echo=FALSE, fig.cap="Figure C: Candidate Party Polls",fig.align="center", fig.width=8, fig.height=3}
 house_candidate <-ggplot(house_polls, mapping = aes(x=candidate_party)) +
   geom_bar() +
   labs(title = "Poll Candidate Party Distribution", subtitle = "House Polls",
        x = "Party Affiliation") +
   theme(axis.text.x = element_text(angle = 45))
-house_candidate
+
 
 senate_candidate <-ggplot(senate_polls, mapping = aes(x=candidate_party)) +
   geom_bar() +
   labs(title = "Poll Candidate Party Distribution", subtitle = "Senate Polls",
        x = "Party Affiliation") +
   theme(axis.text.x = element_text(angle = 45))
-senate_candidate
+
+
+grid.arrange(house_candidate, senate_candidate, ncol=2)
+
 ```
 
-```{r eda-biden, echo=FALSE, fig.cap="Figure D: Biden Margin"}
+```{r eda-biden, echo=FALSE, fig.cap="Figure D: Biden Margin", fig.align='center', fig.width=4, fig.height=3}
 biden_margin <-ggplot(president_polls_2020, mapping = aes(x=biden_margin)) +
   geom_bar() +
   labs(title = "Biden Margin", x = "Range")
@@ -227,8 +237,38 @@ jags_data$I_states <- diag(N_states)
 #be sure to add your added parameters to parameters.to.save
 jags_sims_mv <- jags(data = jags_data,model.file = model_mv,parameters.to.save = c("theta","Sigma",
                                                                                 "p","sigma2_y"),
-                  n.iter = 10000)
+                  n.iter = total_MCMC_itr)
 ```
+
+```{r mcmc president diagnostic, include=F}
+
+mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)
+
+Result_MCMC_president <- as.mcmc(jags_sims_mv)
+Result_data_president <- data.frame(as.matrix(Result_MCMC_president))
+Result_data_president$index <- seq(1, dim(Result_data_president)[1])
+
+
+trace_president_p <- ggplot(data=Result_data_president) +
+  geom_line(aes(x = index, y=p.712.), color="blue") + 
+  geom_line(aes(x = index, y=p.612.), color="green") + 
+  geom_line(aes(x = index, y=p.512.), color="red") +
+  geom_line(aes(x = index, y=p.71.), color="black") + 
+  geom_line(aes(x = index, y=p.61.), color="grey") + 
+  geom_line(aes(x = index, y=p.51.), color="pink") 
+
+
+trace_president_sigma <- ggplot(data=Result_data_president) +
+  geom_line(aes(x = index, y=Sigma.1.1.), color="blue") + 
+  geom_line(aes(x = index, y=Sigma.11.10.), color="green") + 
+  geom_line(aes(x = index, y=Sigma.2.10.), color="red") +
+  geom_line(aes(x = index, y=Sigma.4.10.), color="black") + 
+  geom_line(aes(x = index, y=Sigma.3.10.), color="grey") + 
+  geom_line(aes(x = index, y=Sigma.6.10.), color="pink") 
+
+
+```
+
 
 ```{r voting state plot, include=F, message=F}
 poll_plot_data <- tibble(y=jags_data$y,t=jags_data$t %>% as.integer(),state = states[jags_data$r])
@@ -274,18 +314,19 @@ president_var <- poll_plot_data %>%
 ```{r winning probability, include=F, eval=T}
 sims <- jags_sims_mv$BUGSoutput$sims.list$theta[,,1]
 colnames(sims) <- states
-swing_state_win_prob <- as.data.frame(sims %>% {.>50} %>% colMeans())
+swing_state_win_prob <- as.data.frame(sims %>% {.>52} %>% colMeans())
 names(swing_state_win_prob) <- "Winning Probability"
 swing_state_win_prob <- kable(swing_state_win_prob, caption = "Swing State Winning Probability")
 
-swing_state_share_interval_president <- kable(colQuantiles(sims, probs=c(0.025, 0.5, 0.975)), caption = "Swing State Share Percentage Interval Estimate (Biden)")
+swing_state_share_interval_president <- kable(colQuantiles(sims+2, probs=c(0.025, 0.5, 0.975)), caption = "Swing State Share Percentage Interval Estimate (Biden)")
+
 
 ```
 
 ```{r ec vote distribution, echo=F}
 #in other states: Biden: 232-13, Trump: 306-29-18-15-10-20
 # c_ex_votes <- 232-13; t_ex_votes <- 306-29-18-15-10-20
-ec_votes <- ((sims>50) %*% diag(c(10,20, 29,38,16,16,15, 9, 18, 11, 6, 6, 4))) %>% rowSums() + 210
+ec_votes <- ((sims>52) %*% diag(c(10,20, 29,38,16,16,15, 9, 18, 11, 6, 6, 4))) %>% rowSums() + 210
 ec_vote_mean <- mean(ec_votes)
 ec_vote_qt <- quantile(ec_votes, probs=c(0.025, 0.975))
 ec_vertical_lines <- c(ec_vote_qt[1], ec_vote_mean, ec_vote_qt[2])
@@ -338,7 +379,7 @@ colnames(cor_mean) <- states
 rownames(cor_mean) <- states
 
 #full heatmap
-get_heatmap(cor_mean)
+heatMap <- get_heatmap(cor_mean)
 ```
 
 
@@ -419,7 +460,36 @@ senator_jags_data$I_states <- diag(N_states)
 jags_sims_senator <- jags(data = senator_jags_data,
                           model.file = model_senator,
                           parameters.to.save = c("theta","Sigma","p","sigma2_y"),
-                          n.iter = 10000)
+                          n.iter = total_MCMC_itr)
+```
+
+```{r mcmc senate diagnostic, include=F}
+
+mean(as.data.frame(jags_sims_senator$BUGSoutput$summary)$Rhat)
+
+Result_MCMC_senate <- as.mcmc(jags_sims_mv)
+Result_data_senate <- data.frame(as.matrix(Result_MCMC_senate))
+Result_data_senate$index <- seq(1, dim(Result_data_senate)[1])
+
+
+trace_senate_p <- ggplot(data=Result_data_senate) +
+  geom_line(aes(x = index, y=p.712.), color="blue") + 
+  geom_line(aes(x = index, y=p.612.), color="green") + 
+  geom_line(aes(x = index, y=p.512.), color="red") +
+  geom_line(aes(x = index, y=p.71.), color="black") + 
+  geom_line(aes(x = index, y=p.61.), color="grey") + 
+  geom_line(aes(x = index, y=p.51.), color="pink") 
+
+
+trace_senate_sigma <- ggplot(data=Result_data_senate) +
+  geom_line(aes(x = index, y=Sigma.1.1.), color="blue") + 
+  geom_line(aes(x = index, y=Sigma.11.10.), color="green") + 
+  geom_line(aes(x = index, y=Sigma.2.10.), color="red") +
+  geom_line(aes(x = index, y=Sigma.4.10.), color="black") + 
+  geom_line(aes(x = index, y=Sigma.3.10.), color="grey") + 
+  geom_line(aes(x = index, y=Sigma.6.10.), color="pink") 
+
+
 ```
 
 ```{r plot senator for all state, eval=T, include=F}
@@ -446,7 +516,7 @@ senator_trend <- left_join(senator_beta_plot_data,senator_poll_plot_data) %>%
 
 ```
 
-```{r plot senator prob for all state, eval=T}
+```{r plot senator prob for all state, eval=T, echo=F}
 senator_poll_plot_data$p <- jags_sims_senator$BUGSoutput$mean$p
 senator_poll_plot_data$sigma2y <- jags_sims_senator$BUGSoutput$mean$sigma2_y[senator_jags_data$r]
 senator_poll_plot_data$binom_v <- (senator_poll_plot_data$p)*(100-senator_poll_plot_data$p)/ senator$sample_size
@@ -687,7 +757,36 @@ house_jags_data$I_states <- diag(N_states)
 jags_sims_house <- jags(data = house_jags_data,
                           model.file = model_house,
                           parameters.to.save = c("theta","Sigma","p","sigma2_y"),
-                          n.iter = 10000)
+                          n.iter = total_MCMC_itr)
+```
+
+```{r mcmc house diagnostic, include=F}
+
+mean(as.data.frame(jags_sims_house$BUGSoutput$summary)$Rhat)
+
+Result_MCMC_house <- as.mcmc(jags_sims_mv)
+Result_data_house <- data.frame(as.matrix(Result_MCMC_house))
+Result_data_house$index <- seq(1, dim(Result_data_house)[1])
+
+
+trace_house_p <- ggplot(data=Result_data_house) +
+  geom_line(aes(x = index, y=p.712.), color="blue") + 
+  geom_line(aes(x = index, y=p.612.), color="green") + 
+  geom_line(aes(x = index, y=p.512.), color="red") +
+  geom_line(aes(x = index, y=p.71.), color="black") + 
+  geom_line(aes(x = index, y=p.61.), color="grey") + 
+  geom_line(aes(x = index, y=p.51.), color="pink") 
+
+
+trace_house_sigma <- ggplot(data=Result_data_house) +
+  geom_line(aes(x = index, y=Sigma.1.1.), color="blue") + 
+  geom_line(aes(x = index, y=Sigma.11.10.), color="green") + 
+  geom_line(aes(x = index, y=Sigma.2.10.), color="red") +
+  geom_line(aes(x = index, y=Sigma.4.10.), color="black") + 
+  geom_line(aes(x = index, y=Sigma.3.10.), color="grey") + 
+  geom_line(aes(x = index, y=Sigma.6.10.), color="pink") 
+
+
 ```
 
 ```{r plot house for all congression dist, eval=F, echo=F}
@@ -787,9 +886,25 @@ senate_dis # plot total REP senators
 
 house_all_cong_dist_prob # Kable congressional district REP winning probability
 house_all_cong_dist_share_interval # Kable congressional district REP share pct interval
+
+
+grid.arrange(trace_president_p, trace_senate_p, trace_house_p, trace_president_sigma, trace_senate_sigma, trace_house_sigma, ncol=3)
+
+
+
+
+
+
+heatMap
+
+
+
 ```
 
 ```{r}
-swing_state_share_interval_president
+
+mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)
+mean(as.data.frame(jags_sims_senator$BUGSoutput$summary)$Rhat)
+mean(as.data.frame(jags_sims_house$BUGSoutput$summary)$Rhat)
 ```
 
