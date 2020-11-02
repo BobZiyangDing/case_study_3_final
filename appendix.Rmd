@@ -1,0 +1,59 @@
+---
+title: "Case Study 3: Appendix"
+author: "Bob Ding, Becca Erenbaum, Grace O'Leary, Rena Zhong"
+date: "11/1/2020"
+  pdf_document:
+    fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 7, fig.height = 5)
+options(digits = 4)
+```
+
+```{r packages, include=F}
+library(FedData)
+pkg_test("mcmcr")
+pkg_test("tidyverse")
+pkg_test("R2jags")
+pkg_test("ggplot2")
+pkg_test("knitr")
+pkg_test("matrixStats")
+pkg_test("gridExtra")
+pkg_test("kableExtra")
+pkg_test("usmap")
+pkg_test("tidyr")
+pkg_test("dplyr")
+pkg_test("plyr")
+```
+
+```{r load-data, include=FALSE, warning=FALSE}
+
+total_MCMC_itr = 10000
+president_polls_2020 <- read_csv("2020 US presidential election polls - all_polls.csv") %>%
+    mutate(days_to_election = as.Date("2020/11/03","%Y/%m/%d" ) - as.Date(end.date, "%m/%d/%Y"),
+         state = ifelse(state == "--","Overall",state),
+         y = biden/(biden + trump)*100)
+
+house_polls <- read_csv("house_polls.csv")
+senate_polls <- read_csv("senate_polls.csv")
+ncvhis_Statewide_small <- read_rds("ncvhis_Statewide_small.rds")
+```
+
+```{r appendix-eda, include=FALSE}
+#method
+aeda1<-ggplot(ncvhis_Statewide_small, mapping = aes(x=voting_method, fill=election_lbl)) +
+  geom_bar(position = 'dodge') +
+  labs(title = "NC Voting Method", subtitle = "By Election Year",
+       fill = "Election Date", x = "Voting Method") +
+  theme(axis.text.x = element_text(angle = 90))
+
+#party affiliation
+aeda2<-ggplot(ncvhis_Statewide_small, mapping = aes(x=voted_party_desc, fill=election_lbl)) +
+  geom_bar(position = 'dodge') +
+  labs(title = "NC Party Affiliation", subtitle = "By Election Year",
+       fill = "Election Date", x = "Party Affiliation") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
