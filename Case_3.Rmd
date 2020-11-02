@@ -1320,6 +1320,23 @@ Similarly, before and after perturbation, the results are all attached in Table 
 
 # Appendix
 
+```{r appendix-eda, echo=FALSE, fig.align='center', fig.width=8, fig.height=4}
+#method
+aeda1<-ggplot(ncvhis_Statewide_small, mapping = aes(x=voting_method, fill=election_lbl)) +
+  geom_bar(position = 'dodge') +
+  labs(title = "NC Voting Method", subtitle = "By Election Year",
+       fill = "Election Date", x = "Voting Method") +
+  theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom')
+#party affiliation
+aeda2<-ggplot(ncvhis_Statewide_small, mapping = aes(x=voted_party_desc, fill=election_lbl)) +
+  geom_bar(position = 'dodge') +
+  labs(title = "NC Party Affiliation", subtitle = "By Election Year",
+       fill = "Election Date", x = "Party Affiliation") +
+  theme(axis.text.x = element_text(angle = 90), legend.position = 'bottom')
+
+grid.arrange(aeda1, aeda2, ncol=2)
+```
+
 ```{r output all results, echo=F}
 swing_state_traj #plot swing state DEM party
 president_var #plot president variance
