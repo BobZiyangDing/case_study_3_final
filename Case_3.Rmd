@@ -178,7 +178,7 @@ biden_margin <-ggplot(president_polls_2020, mapping = aes(x=biden_margin)) +
 biden_margin
 ```
 
-To explore the North Carolina voter history dataset, we looked at variables such as method, county, and party affiliation of the voter. We can see in Figure 5 that the majority of North Carolina voters are from two counties, Wake and Mecklenberg. Party affiliation and the method that the voters used are included in our appendix (-----). 
+To explore the North Carolina voter history dataset, we looked at variables such as method, county, and party affiliation of the voter. We can see in Figure 5 that the majority of North Carolina voters are from two counties, Wake and Mecklenberg. Party affiliation and the method that the voters used are included in our appendix C Figure 6. 
 
 ```{r eda-ncmap, echo=FALSE, fig.cap="North Carolina Map of Voter Distribution by County", fig.align='center', fig.width=4, fig.height=3, fig.pos="H"}
 
@@ -1583,7 +1583,7 @@ Dataset 4 [NC Voter Statewide Small (NCSBE Snapshots) ]
 
 # Appendix C Figures
 
-```{r appendix-eda, echo=FALSE, fig.align='center', fig.width=8, fig.height=4, warning=F, message=F}
+```{r appendix-eda, echo=FALSE, fig.align='center', fig.width=8, fig.height=4, warning=F, message=F, fig.cap="North Carolina Voting Method and Party Affiliation"}
 #method
 aeda1<-ggplot(ncvhis_Statewide_small, mapping = aes(x=voting_method, fill=election_lbl)) +
   geom_bar(position = 'dodge') +
@@ -1604,18 +1604,10 @@ grid.arrange(aeda1, aeda2, ncol=2)
 swing_state_traj #plot swing state DEM party
 # president_var #plot president variance
 
-
-
-
-
 senator_trend # plot senator trend for 47 states
 # senator_var # plot senator variance for 47 states
 
-
-
 # heatMap
-
-
 
 ```
 
