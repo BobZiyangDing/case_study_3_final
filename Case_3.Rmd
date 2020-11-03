@@ -482,10 +482,12 @@ ec_vote_mean <- mean(ec_votes)
 ec_vote_qt <- quantile(ec_votes, probs=c(0.025, 0.975))
 ec_vertical_lines <- c(ec_vote_qt[1], ec_vote_mean, ec_vote_qt[2])
 ec_dis <- ggplot() + aes(ec_votes)+ geom_histogram(binwidth=5) + ggtitle("Electoral College Vote Share Distribution") + geom_vline(xintercept = ec_vertical_lines) + labs(x="Total Electoral College Vote", y="Count")
-ec_interval <- kable(quantile(ec_votes, probs = c(0.025, 0.975) ), caption="EC Vote Total (Biden)")
+
+ec_interval <- as.data.frame(quantile(ec_votes, probs = c(0.025, 0.975) ))
+names(ec_interval) <- c("Number of Votes")
+ec_interval <- kable(ec_interval, caption="EC Vote Total (Biden)")
 
 swing_state_prob <- mean({ec_votes > 270})
-ec_vote_mean
 ```
 
 ```{r some random functions, include=F}
@@ -807,17 +809,20 @@ swing_state_share_interval <- cbind(swing_state_share_interval,
                                     swing_state_share_interval_3)
 
 
-swing_state_share_interval <- kbl(swing_state_share_interval, booktabs=T, caption = "Senator All State Vote Share Percentage Interval Estimate (REP") %>%
+swing_state_share_interval <- kbl(swing_state_share_interval, booktabs=T, caption = "Senator All State Vote Share Percentage Interval Estimate (REP)") %>%
   add_header_above(c(" " = 1, "Official Model" = 3, "Informative Prior" = 3, "Imputation Perturbation" = 3)) %>% 
   kable_styling(latex_options = "striped") %>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r answer for North Carolina, include=F}
+```{r answer for North Carolina, include=F, message=F, warning=F}
 temp <- as.data.frame( t(senator_sims %>% {.>48} %>% colMeans()) )
 
 longnames <- NULL
-interval_nc_senate <- quantile(as.data.frame(senator_sims)$`North Carolina`,  probs = c(0.025, 0.5, 0.975))
+interval_nc_senate <- data.frame(quantile(as.data.frame(senator_sims)$`North Carolina`,  probs = c(0.025, 0.5, 0.975)))
+
+names(interval_nc_senate) <- "Vote Percentage"
+
 nc_senate_share_qt <- kable(interval_nc_senate, caption="North Carolina Vote Share Interval Estimate")
 mean_nc_senate_prob <- temp$`North Carolina`
 nc_senate_share <- ggplot() + aes(interval_nc_senate)+ geom_histogram() + geom_density(fill="blue", alpha=0.3) + ggtitle("NC Thom Tillis Voter Share Distribution") + geom_vline(xintercept = mean(interval_nc_senate))
@@ -1242,7 +1247,7 @@ house_all_cong_dist_share_interval <- cbind(house_all_cong_dist_share_interval,
                                       house_all_cong_dist_share_interval_2,
                                       house_all_cong_dist_share_interval_3)
 
-house_all_cong_dist_share_interval <- kbl(house_all_cong_dist_share_interval, booktabs=T, caption = "House All Congressional District Winning Probability (REP)") %>%
+house_all_cong_dist_share_interval <- kbl(house_all_cong_dist_share_interval, booktabs=T, caption = "House All Congressional District Vote Share Interval Estimate (REP)") %>%
   add_header_above(c(" " = 1, "Official Model" = 3, "Informative Prior" = 3, "Imputation Perturbation" = 3)) %>% 
   kable_styling(latex_options = "striped") %>%
   kable_styling(latex_options = "HOLD_position")
@@ -1254,7 +1259,7 @@ house_all_cong_dist_share_interval <- kbl(house_all_cong_dist_share_interval, bo
 
 ## 4.1 Model Diagnostic
 
-Due to the fact that the parameter set is sparse -- that is, $\beta$ matrix has very few observations due to the lack of poll data, it is necessary to test the convergence of MCMC. We've run 6 MCMC chains on the input data for all the 3 models. Below in appendix (--------) is some randomly selected model parameters' traceplot. The reason for only illustrating some of them is that the models have too many parameters to keep track of. Thus, it is not feasible to illustrate them all. Trace plots show no significant convergent issues. Besides, the Gelman Rubin test has returned estimated Rhat to be 1.042, 1051, and 1.003, showing sufficient mixing. This holds for all the 3 MCMC models. Thus, we can deduce that MCMC has sufficiently converged.
+Due to the fact that the parameter set is sparse -- that is, $\beta$ matrix has very few observations due to the lack of poll data, it is necessary to test the convergence of MCMC. We've run 6 MCMC chains on the input data for all the 3 models. Below in Appendix C Figure 7 is some randomly selected model parameters' traceplot. The reason for only illustrating some of them is that the models have too many parameters to keep track of. Thus, it is not feasible to illustrate them all. Trace plots show no significant convergent issues. Besides, the Gelman Rubin test has returned estimated Rhat to be 1.042, 1051, and 1.003, showing sufficient mixing. This holds for all the 3 MCMC models. Thus, we can deduce that MCMC has sufficiently converged.
 
 ## 4.2 Results Validation and Sanity Check
 
@@ -1279,9 +1284,7 @@ All districts, except the 11th, have incumbents running for reelection. In distr
 
 ## 5.1 Presidential Election and Electoral Vote
 
-Our model predicts that Biden will win with a percentage of 67.4% and the electoral college vote will be 303 (rounded from 303.4) with the 95% confidence interval being (230, 387) votes as shown in Table 1.
-
-
+Our model predicts that Biden will win with a percentage of 67.4% and the electoral college vote will be 303 (rounded from 303.4) with the 95% confidence interval being (230, 387) votes as shown in Table 1. Distribution of th EC vote distribution is shown below. Futhermore, probability of each state Biden's chance of winning is shown in Appendix D Figure 3, and his interval estimated vote share in Appendix D Figure 4.
 
 ```{r 5.1 result, echo=F, fig.align='center', fig.width=4, fig.height=3}
 # print(paste("biden wins", swing_state_prob)) #swing state probility of biden win
@@ -1295,9 +1298,9 @@ ec_interval #kable of ec vote CI
 
 ## 5.2 Whether Senate Remains in Republican Control
 
-Our model predicts that the Republican Party will remain in control of the Senate with only a probability of 20%, meaning it is more likely that the Democratic Party will be in control of the Senate.
+Our model predicts that the Republican Party will remain in control of the Senate with only a probability of 20%, meaning it is more likely that the Democratic Party will be in control of the Senate. The distribution of total Republican Senators is shown below in the figure. The probabilities of Republican wins the senator election in each running states are shown in Appendix D Table 5, with the interval estimate of vote share in each running states shown in Appendix D Table 6.
 
-```{r 5.2 result, echo=F, fig.align='center', fig.width=4, fig.height=2.7, fig.pos='H'}
+```{r 5.2 result, echo=F, fig.align='center', fig.width=5, fig.height=2.7, fig.pos='H'}
 # print(paste("republican control senate",rep_senate_prob)) # probability REP controls senate
 senate_dis # plot total REP senators
 ```
@@ -1305,7 +1308,7 @@ senate_dis # plot total REP senators
 
 ## 5.3 13 NC Congressional District Result
 
-In District 1 of North Carolina, G. K. Butterfield (D) is predicted to win. In District 2, Alan Swain (R) is predicted to win, and in District 3, Gregory Murphy (R) will win. District 4 is predicted to elect David Price (D). District 5 is predicted to elect Virginia Foxx (R). In District 6, Kathy Manning (D) is predicted to be elected. In District 7, David Rouzer (R) is predicted to win, and in District 8, Richard Hudson (R) is predicted to win. In District 9, Cynthia Wallace (D) is predicted to win, and in District 10, Patrick T. McHenry (R) is predicted to win. Morris Davis (D) is predicted to win District 11. In District 12, Alma Adams (D) is predicted to win. Finally, in District 13, Ted Budd (R) is predicted to win. The probability and confidence intervals for the republican party winning the congressional district for each of North Carolina's 13 Congressional Districts are shown in Table 3 below. 
+In District 1 of North Carolina, G. K. Butterfield (D) is predicted to win. In District 2, Alan Swain (R) is predicted to win, and in District 3, Gregory Murphy (R) will win. District 4 is predicted to elect David Price (D). District 5 is predicted to elect Virginia Foxx (R). In District 6, Kathy Manning (D) is predicted to be elected. In District 7, David Rouzer (R) is predicted to win, and in District 8, Richard Hudson (R) is predicted to win. In District 9, Cynthia Wallace (D) is predicted to win, and in District 10, Patrick T. McHenry (R) is predicted to win. Morris Davis (D) is predicted to win District 11. In District 12, Alma Adams (D) is predicted to win. Finally, in District 13, Ted Budd (R) is predicted to win. The estimated probability of each congressional district to win is in Table 7 in Appendix D. And the interval estimate for Republican's vote share of the 13 districts are shown in Table 8 in Appendix D. 
 
 ```{r 5.3 result, echo=F}
 
@@ -1316,7 +1319,7 @@ In District 1 of North Carolina, G. K. Butterfield (D) is predicted to win. In D
 
 ## 5.4 NC Senator Election
 
-In North Carolina, Tom Tillis is predicted to win the Senate seat with a probability of 47.3% and a 95% confidence interval of (45.7, 50.7).
+In North Carolina, Tom Tillis is predicted to win the Senate seat with a probability of 47.3%, with a 95% confidence interval of his vote share percentage as (45.7, 50.7), shown in Table 2 at the top of the page.
 
 ```{r 5.4 result, echo=F}
 
@@ -1341,7 +1344,7 @@ $$
 \end{aligned}
 $$
 
-The result is also attached in Table (------) (------) (------) (------) (------) (------) in the appendix. In all these tables, the "Official Model" column gives point or interval estimates using the prior in section 3, the model section, whereas the "Informative Prior" column gives all the same results using the above set of prior.
+The result is also attached in Table 3, 4, 5, 6, 7, 8 in  Appendix D. In all these tables, the "Official Model" column gives point or interval estimates using the prior in section 3, the model section, whereas the "Informative Prior" column gives all the same results using the above set of prior.
 Based on the observation, though the range of uncertainty parameters have been adjusted to 2 digits of magnitude, both estimates are still very similar. Thus, this justifies 2 facts: 
 
 * The sample size in the Linzer Model is sufficient in providing enough information (rather than only drawing information from the priors) to inform posterior distributions
@@ -1389,7 +1392,7 @@ $$
 
 We're concerned whether 10% deviation of imputed vote share percentage from the truth vote share percentage will generate completely different results. Therefore, we chose $\kappa = 5\%$, that $10\%$ range is plus or minus 2 standard deviations from the mean. This is the perturbation process we've conducted.
 
-Similarly, before and after perturbation, the results are all attached in Table (------) (------) (------) (------) (------) (------). This time, the "Imputation Perturbation" column contains all the estimated results. We still observe no major difference between the estimated probability or vote share interval estimates. Thus, small errors introduced in or imputation won't affect the final prediction too much. Thus, the results generated upon imputed values are credible.
+Similarly, before and after perturbation, the results are all attached in Table 3, 4, 5, 6, 7, 8 in Appendix D. This time, the "Imputation Perturbation" column contains all the estimated results. We still observe no major difference between the estimated probability or vote share interval estimates. Thus, small errors introduced in or imputation won't affect the final prediction too much. Thus, the results generated upon imputed values are credible.
 
 \newpage
 
@@ -1436,9 +1439,9 @@ Similarly, before and after perturbation, the results are all attached in Table 
 
 \newpage
 
-# Appendix A
+# Appendix A Models
 
-Model 1, to Model Presidential Election Outcome and EC Vote Share
+## Model 1, to Model Presidential Election Outcome and EC Vote Share
 
 $$
 \begin{aligned}
@@ -1461,7 +1464,7 @@ Where $k$ index the polls, $i$ index the states, and $t$ index the date. $i[k]$ 
 For each MCMC iteration, all the $\beta_{i,T} \forall i$ are compared against 50%. If it is bigger than 50%, it means that in the corresponding state, Biden has won all the electoral votes of its state, therefore taking 100% percent of the electoral votes of the state. Otherwise, Biden takes 0%. Therefore, we create a list of 0% and 100%, used to dot product with the number of electoral votes for each state, then plus the total electoral votes of all the "Blue Wall" states, we end up with the total number of Electoral Vote for Biden in this MCMC iteration. Doing the above calculation for all MCMC iteration, we can obtain the posterior distribution of EC votes that Biden wins. From which, we can calculate the probability that Biden wins the election, which equals the number of EC votes bigger than 270 over the total MCMC iterations.
 
 
-Model 2, to Model Senator and NC Senator Election
+## Model 2, to Model Senator and NC Senator Election
 
 $$
 \begin{aligned}
@@ -1484,7 +1487,7 @@ Where $k$ index the polls, $i$ index the states, and $t$ index the date. $i[k]$ 
 
 For each MCMC iteration, all the $\beta_{i,T} \forall i$ are compared against 50%. If it is bigger than 50%, it means that in the corresponding state, Republican has won all the senator spots of its state, therefore taking 100% percent of the senator spots of the state. Otherwise, Republican take 0%. Therefore, we create a list of 0% and 100%, used to dot product with the number of available senator spots for each state, then plus the total existing republican senators of all the non-modeled states, we end up with the total number of senators for Republican Party in this MCMC iteration. Doing the above calculation for all MCMC iteration, we can obtain the posterior distribution of the number of senators that Republican have in the Senate after this election. From which, we can calculate the probability that Republican controls the Senate, which equals the number of Republican Senators bigger than 50 over the total MCMC iterations.
 
-Model 3, to model 13 Congressional District
+## Model 3, to model 13 Congressional District
 
 Similarly, we have the same model.
 
@@ -1527,8 +1530,9 @@ Then, for all $t < T$, where T is the total number of days prior to election day
 
 We only impute the above value for day $t$ prior to 3 days before final election to enable some uncertainty.
 
+\newpage
 
-# Appendix B
+# Appendix B Datasets
 
 List of data sets/data sources
 
@@ -1580,6 +1584,7 @@ Dataset 4 [NC Voter Statewide Small (NCSBE Snapshots) ]
 
 * $t$ index  `date`, with $t[k]$ the poll date index
 
+\newpage
 
 # Appendix C Figures
 

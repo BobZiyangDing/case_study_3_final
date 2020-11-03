@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.1)  3 NOV 2020 00:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.1)  3 NOV 2020 00:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -944,20 +944,20 @@ File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 
 {c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex
 .map}]
-<Case_3_files/figure-latex/eda-methods-1.pdf, id=131, 650.43pt x 289.08pt>
+<Case_3_files/figure-latex/eda-methods-1.pdf, id=143, 650.43pt x 289.08pt>
 File: Case_3_files/figure-latex/eda-methods-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-methods-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-methods-1.pdf  used on i
 nput line 238.
 (pdftex.def)             Requested size: 469.76817pt x 208.78584pt.
-<Case_3_files/figure-latex/eda-state-1.pdf, id=132, 1011.78pt x 289.08pt>
+<Case_3_files/figure-latex/eda-state-1.pdf, id=144, 1011.78pt x 289.08pt>
 File: Case_3_files/figure-latex/eda-state-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-state-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-state-1.pdf  used on inp
 ut line 252.
 (pdftex.def)             Requested size: 469.76266pt x 134.2179pt.
 [2 <./Case_3_files/figure-latex/eda-methods-1.pdf>]
-<Case_3_files/figure-latex/eda-house-senate-polls-1.pdf, id=144, 578.16pt x 216
+<Case_3_files/figure-latex/eda-house-senate-polls-1.pdf, id=156, 578.16pt x 216
 .81pt>
 File: Case_3_files/figure-latex/eda-house-senate-polls-1.pdf Graphic file (type
  pdf)
@@ -965,13 +965,13 @@ File: Case_3_files/figure-latex/eda-house-senate-polls-1.pdf Graphic file (type
 Package pdftex.def Info: Case_3_files/figure-latex/eda-house-senate-polls-1.pdf
   used on input line 261.
 (pdftex.def)             Requested size: 469.75385pt x 176.15768pt.
-<Case_3_files/figure-latex/eda-biden-1.pdf, id=145, 289.08pt x 180.675pt>
+<Case_3_files/figure-latex/eda-biden-1.pdf, id=157, 289.08pt x 180.675pt>
 File: Case_3_files/figure-latex/eda-biden-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-biden-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-biden-1.pdf  used on inp
 ut line 270.
 (pdftex.def)             Requested size: 289.07928pt x 180.67455pt.
-<Case_3_files/figure-latex/eda-ncmap-1.pdf, id=146, 289.08pt x 216.81pt>
+<Case_3_files/figure-latex/eda-ncmap-1.pdf, id=158, 289.08pt x 216.81pt>
 File: Case_3_files/figure-latex/eda-ncmap-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-ncmap-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-ncmap-1.pdf  used on inp
@@ -980,89 +980,89 @@ ut line 285.
 [3 <./Case_3_files/figure-latex/eda-state-1.pdf> <./Case_3_files/figure-latex/e
 da-house-senate-polls-1.pdf> <./Case_3_files/figure-latex/eda-biden-1.pdf>] [4 
 <./Case_3_files/figure-latex/eda-ncmap-1.pdf>] [5] [6] [7]
-<Case_3_files/figure-latex/5.1 result-1.pdf, id=209, 289.08pt x 216.81pt>
+<Case_3_files/figure-latex/5.1 result-1.pdf, id=221, 289.08pt x 216.81pt>
 File: Case_3_files/figure-latex/5.1 result-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/5.1 result-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/5.1 result-1.pdf  used on in
-put line 584.
+put line 588.
 (pdftex.def)             Requested size: 289.09251pt x 216.81938pt.
 [8]
-<Case_3_files/figure-latex/5.2 result-1.pdf, id=215, 289.08pt x 194.7275pt>
+<Case_3_files/figure-latex/5.2 result-1.pdf, id=227, 361.35pt x 194.7275pt>
 File: Case_3_files/figure-latex/5.2 result-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/5.2 result-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/5.2 result-1.pdf  used on in
-put line 608.
-(pdftex.def)             Requested size: 289.0881pt x 194.73294pt.
+put line 617.
+(pdftex.def)             Requested size: 361.34912pt x 194.727pt.
 [9 <./Case_3_files/figure-latex/5.1 result-1.pdf> <./Case_3_files/figure-latex/
 5.2 result-1.pdf>] [10] [11]
-Underfull \hbox (badness 1221) in paragraph at lines 799--802
+Underfull \hbox (badness 1221) in paragraph at lines 809--812
 \T1/lmr/m/n/10 02, 2020, from []$https : / / www . politico . com / story / 201
 9 / 08 / 28 / sen -[] johnny -[] isakson -[] to -[] resign -[] at -[] end -[] o
 f -[] the -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 812--814
+Underfull \hbox (badness 10000) in paragraph at lines 822--824
 []\T1/lmr/m/n/10 [19] []$https : / / www . theadvocate . com / baton _ rouge / 
 news / politics / elections / article _ 4923a528 -[] 1c94 -[] 11eb -[]
  []
 
-[12] [13] [14]
+[12] [13] [14] [15]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-038.
+053.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [15]
-<Case_3_files/figure-latex/appendix-eda-1.pdf, id=302, 578.16pt x 289.08pt>
+) [16]
+<Case_3_files/figure-latex/appendix-eda-1.pdf, id=319, 578.16pt x 289.08pt>
 File: Case_3_files/figure-latex/appendix-eda-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/appendix-eda-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/appendix-eda-1.pdf  used on 
-input line 1077.
+input line 1094.
 (pdftex.def)             Requested size: 469.75385pt x 234.8769pt.
-<Case_3_files/figure-latex/output all results-1.pdf, id=303, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-1.pdf, id=320, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-1.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-1.pdf  us
-ed on input line 1084.
+ed on input line 1101.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/output all results-2.pdf, id=304, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-2.pdf, id=321, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-2.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-2.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-2.pdf  us
-ed on input line 1085.
+ed on input line 1102.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/MCMC trace plot plot-1.pdf, id=305, 505.89pt x 361.3
+<Case_3_files/figure-latex/MCMC trace plot plot-1.pdf, id=322, 505.89pt x 361.3
 5pt>
 File: Case_3_files/figure-latex/MCMC trace plot plot-1.pdf Graphic file (type p
 df)
 <use Case_3_files/figure-latex/MCMC trace plot plot-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/MCMC trace plot plot-1.pdf  
-used on input line 1089.
+used on input line 1106.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[16 <./Case_3_files/figure-latex/appendix-eda-1.pdf>]
+[17 <./Case_3_files/figure-latex/appendix-eda-1.pdf>]
 Overfull \vbox (21.65953pt too high) has occurred while \output is active []
 
-[17 <./Case_3_files/figure-latex/output all results-1.pdf> <./Case_3_files/figu
-re-latex/output all results-2.pdf>] [18 <./Case_3_files/figure-latex/MCMC trace
- plot plot-1.pdf>] [19] [20] [21] [22] [23] (./Case_3.aux)
+[18 <./Case_3_files/figure-latex/output all results-1.pdf> <./Case_3_files/figu
+re-latex/output all results-2.pdf>] [19 <./Case_3_files/figure-latex/MCMC trace
+ plot plot-1.pdf>] [20] [21] [22] [23] [24] (./Case_3.aux)
 Package rerunfilecheck Info: File `Case_3.out' has not changed.
-(rerunfilecheck)             Checksum: BFB8376AA35A7D8A8CBA5C7AD2E18AB9;5509.
+(rerunfilecheck)             Checksum: 648A32471B39A97B06B7AB1A1CD01662;6623.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 18596 strings out of 481433
- 287865 string characters out of 5918906
- 616572 words of memory out of 5000000
- 34895 multiletter control sequences out of 15000+600000
+ 18606 strings out of 481433
+ 288120 string characters out of 5918906
+ 616834 words of memory out of 5000000
+ 34901 multiletter control sequences out of 15000+600000
  619127 words of font info for 125 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 66i,10n,74p,429b,436s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 66i,10n,74p,455b,404s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.en
 c}{c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/mnsymbol/Mn
 SymbolC.enc}{c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/l
@@ -1083,10 +1083,10 @@ fb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr1
 mr17.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/l
 m/lmr7.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public
 /lm/lmtt10.pfb>
-Output written on Case_3.pdf (23 pages, 1123238 bytes).
+Output written on Case_3.pdf (24 pages, 1125057 bytes).
 PDF statistics:
- 450 PDF objects out of 1000 (max. 8388607)
- 387 compressed objects within 4 object streams
- 75 named destinations out of 1000 (max. 500000)
- 280 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 469 PDF objects out of 1000 (max. 8388607)
+ 404 compressed objects within 5 object streams
+ 79 named destinations out of 1000 (max. 500000)
+ 304 words of extra memory for PDF output out of 10000 (max. 10000000)
 
