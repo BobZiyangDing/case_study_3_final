@@ -54,23 +54,20 @@ pkg_test("plyr")
 
 # 1. Introduction
 
-The outcome of the 2016 election not only stunned the nation, but also sent shockwaves through the statistical and polling communities. Over the course of the election year in 2016 up until the week of the election, poll predictions of Hillary Clinton's likelihood of beating Donald Trump ranged from 71%- 99% probability [1]. So when Trump beat these odds, the polling industry lost a lot of trust from the general public [2].
-
-This small, specialized industry that is the political polling business, has a great deal of influence on how the election is portrayed in the news media, voter decisions, and candidate partisan policy initiatives. [1]. Million dollar decisions on advertising and campaign strategy are dictated by polls. 
-
-Polls conducted early in the election year are a weak predictor of election outcomes because the general public has paid less attention to the race and is less knowledgeable of the candidates' platforms. Voters that tend to sway between parties often report that they are undecided, however these are arguably the most important opinions in predicting the election outcomes. [3] As the election nears, polls become more accurate, but that is where historical prediction models have been lacking -- they fail to take into account the differential accuracy in poll results. Historical models, regression based models that rely on outcomes from past elections and structural factors, predict election outcomes at a single point in time which renders high levels of uncertainty [4]. 
-
+The outcome of the 2016 election not only stunned the nation, but also sent shockwaves through the statistical and polling communities. Over the course of the election year, in 2016, up until the week of the election, poll predictions of Hillary Clinton's likelihood of beating Donald Trump ranged from 71%- 99% probability [1]. So, when Trump beat these odds, the polling industry lost a lot of trust from the general public [2].
+	This small, specialized industry that is the political polling business, has a great deal of influence on how the election is portrayed in the news media, voter decisions, and candidate partisan policy initiatives. [1]. Million dollar decisions on advertising and campaign strategy are dictated by polls. 
+	Polls conducted early in the election year are a weak predictor of election outcomes because the general public has paid less attention to the race and is less knowledgeable of the candidates' platforms. Voters that tend to sway between parties often report that they are undecided. However, these are arguably the most important opinions in predicting the election outcomes. [3] As the election nears, polls become more accurate. That is where historical prediction models have been lacking -- they fail to take into account the differential accuracy in poll results. Historical models, regression based models that rely on outcomes from past elections and structural factors, predict election outcomes at a single point in time which renders high levels of uncertainty [4]. 
 Drew A. Linzer developed a dynamic bayesian forecasting model to predict the U.S. presidential election at the national and state level that combines these historical models with everchanging poll updates. Linzer's model uses hierarchical specification to handle states being polled on different days and takes into account sampling errors of the polls and national campaign effects [4]. 
 
-In this report we aim to:
+In this report we aim to answer the following 4 questions:
 
-* Predict the outcome of the presidential election and the electoral college vote using the Linzer model to predict swing state outcomes in combination 
+* 1. Predict the outcome of the presidential election and the electoral college vote using the Linzer model to predict swing state outcomes in combination with presumed election results of "Red Wall" and "Blue Wall" states.
 
-* Predict whether the US Senate remains in Republican control by using an adaptation of the Linzer model and FiveThirtyEight Senate poll data for each state
+* 2. Predict whether the US Senate remains in Republican control by using an adaptation of the Linzer model and FiveThirtyEight Senate poll data for each state
 
-* Predict the outcomes of all 13 NC Congressional elections using Linzer model with input from FiveThirtyEight Senate poll data for North Carolina along with our model that predicts who will vote in North Carolina
+* 3. Predict the outcomes of all 13 NC Congressional elections using Linzer model with input from FiveThirtyEight Senate poll data for North Carolina along with our model that predicts who will vote in North Carolina
 
-* Predict the outcome of the NC Senate election and the associated uncertainty using the Linzer model.
+* 4. The outcome of the NC Senate election and the associated uncertainty using the Linzer model.
 
 Taking into account the anomaly that was the 2016 election, we chose to use the Linzer model to best account for slight and unexpected changes leading up to election day. In Section 2 of this report we will discuss datasets used for all tasks, including a brief exploratory data analysis. In Section 3, we formulate models and methodologies that answer all the research questions. Section 4 will present model diagnostic and sanity check validation of prediction. Then, in section 5 we present the major results of our analysis. Section 6 will be focused on conducting sensitivity analysis to test data imputation hypothesis and prior choices.
 
@@ -125,9 +122,9 @@ presidential_method <-ggplot(president_polls_2020, mapping = aes(x=mode)) +
 grid.arrange(house_method, senate_method, presidential_method, ncol=3)
 ```
 
-In Figure 2, we can see how each poll's distribution of which state was polled, and in Figure 3, we can see how the house and senate polls' candidate party are different from each other. Finally, in Figure 4, we can see the distribution of the margin between Biden and Trump.
+In Figure 2, we can see how each poll's distribution of which state was polled, and in Figure 3, we can see how the house and senate polls' candidate party are different from each other. Finally, in Figure 4, we can see the distribution of the margin between Biden and Trump. 
 
-```{r eda-state, echo=FALSE, fig.cap="Polls State Distribution",fig.align="center", fig.width=12, fig.height=4, fig.pos="H"}
+```{r eda-state, echo=FALSE, fig.cap="Polls State Distribution",fig.align="center", fig.width=14, fig.height=4, fig.pos="H"}
 house_state <-ggplot(house_polls, mapping = aes(x=state)) +
   geom_bar() +
   labs(title = "Poll State Distribution", subtitle = "House Polls",
@@ -172,7 +169,6 @@ grid.arrange(house_candidate, senate_candidate, ncol=2)
 
 ```
 
-To explore the North Carolina voter history dataset, we looked at variables such as method, county, and party affiliation of the voter. 
 
 ```{r eda-biden, echo=FALSE, fig.cap="Biden Margin", fig.align='center', fig.width=4, fig.height=2.5, fig.pos="H"}
 biden_margin <-ggplot(president_polls_2020, mapping = aes(x=biden_margin)) +
@@ -181,7 +177,7 @@ biden_margin <-ggplot(president_polls_2020, mapping = aes(x=biden_margin)) +
 biden_margin
 ```
 
-We can see in Figure 5 that the majority of North Carolina voters are from two counties, Wake and Mecklenberg. Party affiliation and the method that the voters used are included in our appendix.
+To explore the North Carolina voter history dataset, we looked at variables such as method, county, and party affiliation of the voter. We can see in Figure 5 that the majority of North Carolina voters are from two counties, Wake and Mecklenberg. Party affiliation and the method that the voters used are included in our appendix (-----). 
 
 ```{r eda-ncmap, echo=FALSE, fig.cap="North Carolina Map of Voter Distribution by County", fig.align='center', fig.width=4, fig.height=3, fig.pos="H"}
 
@@ -200,7 +196,7 @@ ncmap
 
 ## 3.1 Model for Question 1
 
-In this section, we build a model to answer our first research question: Predict the outcome of the presidential election and the electoral college vote using the Linzer model to predict swing state outcomes in combination. To determine swing states, we've relied on worldpopulationreview's partisan index [7]. These states are: FL, GA, IA ,NC ,OH ,TX ,AZ ,MI ,MN ,NV ,NH ,PA ,and WI. We tend to incorporate more states as swing states to avoid strong assumptions that any state is going to win. We follow the route of Linzer and build our model. Specifically, the motivation is that we want to model Joe Biden's percentage of EC vote in the state specific level of detail. We believe that throughout time, each state's preference for Joe Biden is randomly varying and follows a random walk process. Besides, each state's uncertainty of their attitude towards Joe Biden is also state-widely different. We make the assumption that such uncertainty is constant throughout time. Therefore, we create the following extension of Linzer Model.
+In this section, we build a model to answer our first research question: predict the outcome of the presidential election and the electoral college votes. To do this, we use the Linzer model to predict swing state outcomes as well. To determine swing states, we've relied on worldpopulationreview's partisan index [7]. These states are Florida, Georgia, Iowa, North Carolina, Ohio, Texas, Arizona, Michigan, Minnesota, Nevada, New Hampshire, Pennsylvania, and Wisconsin. We tend to incorporate more states as swing states to avoid strong assumptions that any state is going to win. We follow the route of Linzer and build our model. Specifically, we want to model Joe Biden's percentage of EC votes on the state level. We believe that throughout time, each state's preference for Joe Biden randomly varies and follows a random walk process. Besides, each state's uncertainty of their attitude towards Joe Biden is also different statewide. We make the assumption that such uncertainty is constant over time. Therefore, we create the following extension of Linzer Model.
 
 $$
 \begin{aligned}
@@ -218,7 +214,8 @@ y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
 \end{aligned}
 $$
 
-Where $k$ index the polls, $i$ index the states, and $t$ index the date. $i[k]$ represents the $k^{th}$ poll's corresponding state index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index. We model samples from the economist poll data of 2020 and therefore are able to sample the posterior distribution of 1) Joe Biden's chance of winning, and 2) total electoral vote. The sampled posterior distribution y (percentage of supportance within each state) will be calculated by comparing to rounding by 50% to simulate the "winner takes all" procedure. After such adjustment, we can simply multiply the number of electoral college votes of each state to obtain a posterior distribution of electoral college votes of the entire nation. Thus, 2) can be obtained. By comparing to 270 again provides the probability of Joe Biden being elected.
+Where $k$ indexes the poll, $i$ indexes the state, and $t$ indexes the date. $i[k]$ represents the $k^{th}$ poll's corresponding state index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index. We model samples from the economist poll data of 2020 and therefore are able to sample the posterior distribution of 1) Joe Biden's chance of winning, and 2) total electoral vote. The sampled posterior distribution y, which is the percentage of support within each state, will be calculated by comparing it to 50% to simulate the "winner takes all" procedure. After such adjustment, we can simply multiply the number of electoral college votes of each state to obtain a posterior distribution of electoral college votes for the entire nation. Thus, the total electoral vote can be obtained. By comparing this total to 270, we obtain the probability of Joe Biden being elected.
+
 
 
 
@@ -532,12 +529,9 @@ rownames(cor_mean) <- states
 heatMap <- get_heatmap(cor_mean)
 ```
 
-
-
-
 ## 3.2 Model for Question 2, 4
 
-In this section, we're answering question 2 and 4 jointly: Predict whether the US Senate remains in republican control and predict the outcome of the NC Senate election. Similarly, by using the above model with exactly the same notation, and by switching Economist dataset to FiveThirtyEight senate polls data, the same inference procedure can be produced. This time, considering there are some states not running senator elections (Wisconsin, Ohio", Washington, Maryland, Pennsylvania, California, New York, Hawaii, Connecticut, Nevada, Indiana, North Dakota, Missouri, Utah, Vermont, Florida), we only model the states that are running senator elections. After modeling and predicting the Republican's support percentage in each of these "electing states", we can predict whether the Republican or Democrat party wins the state majority in that state. This procedure also includes North Carolina. Furthermore, by summing the posterior samples of Republican senators in each state on election day, we can obtain the posterior distribution of US Senate remains in Republican Party's control.
+In this section, we're answering question 2 and 4 jointly: Predict whether the US Senate remains in republican control and predict the outcome of the NC Senate election. By using the above model with the same notation, and by switching Economist dataset to FiveThirtyEight senate polls data, the same inference procedure can be produced. This time, considering there are some states not running senator elections (Wisconsin, Ohio, Washington, Maryland, Pennsylvania, California, New York, Hawaii, Connecticut, Nevada, Indiana, North Dakota, Missouri, Utah, Vermont, Florida), we only model the states that are running senator elections. After modeling and predicting the Republicans' support percentage in each of these "electing states," we can predict whether the Republican or Democratic party wins the state majority in that state. This procedure also includes North Carolina. Furthermore, by summing the posterior samples of Republican senators in each state on election day, we can obtain the posterior distribution of whether the US Senate remains in Republican Party's control.
 
 ```{r make us senator data, include=F}
 senator <- read_csv("senate_polls.csv")
@@ -840,12 +834,13 @@ rep_senate_prob <- mean( { total_rep_senate > 50}   )
 
 ## 3.3 Model for Question 3
 
-In this section, we answer research question 3: Predict the outcomes of all 13 NC Congressional elections. The dataset we've used is the FiveThirtyEight house poll data. However, the dataset's sample sizes on each NC congressional district are small. This is due to the fact house polls happen less frequently compared to either senate polls or presidential polls. Besides, not all congressional districts are competitive because there is no term limit for representatives. FiveThirtyEight has only recorded poll history data for competitive districts including districts 2 (already conclusive), 3, 7, 8, 9, 11, 13. Thus, correlation between non-competitive districts cannot be captured without inputting extra datasets. Thus, this section's modeling procedure will rely on the output of the interim reports' "who vote" results. 
+In this section, we answer research question 3: Predict the outcomes of all 13 NC Congressional elections. The dataset we used is the FiveThirtyEight house poll data. However, the dataset's sample sizes on each NC congressional district are small. This is due to the fact house polls happen less frequently compared to either senate polls or presidential polls. Besides, not all congressional districts are competitive because there is no term limit for representatives. FiveThirtyEight has only recorded poll history data for competitive districts including districts 2 (already conclusive), 3, 7, 8, 9, 11, 13. Thus, the correlation between non-competitive districts cannot be captured without inputting extra datasets. This section's modeling procedure will rely on the output of the interim reports' "who vote" results. 
 
-Using the model to predict who will vote in 2020, we ran this binary output model on all the registered voters in NC to predict whether they'll vote or not. In the NC voter registration profile 2020 snapshot dataset, there is a column indicating party affiliation of each potential voter. Thus, we can predict the percentage of Republican voters for each congressional district and use this percentage as an imputed value for polls percentage. In this way, we're essentially imputing polling results $y$ for non-competitive districts, which can be also fed into the Linzer Model defined below. A detailed description of how the imputation process work will be discussed after we introduced the Linzer model below:
+Using the model to predict who will vote in 2020, we ran this binary output model on all the registered voters in NC to predict whether they'll vote or not. In the NC voter registration profile 2020 snapshot dataset, there is a column indicating party affiliation of each potential voter [18]. Thus, we can predict the percentage of Republican voters for each congressional district and use this percentage as an imputed value for polls percentage. In this way, we're essentially imputing polling results $y$ for non-competitive districts, which can be also fed into the Linzer Model defined below. A detailed description of how the imputation process work will be discussed after we introduce the Linzer model:
 
 $$
 \begin{aligned}
+y_{k} &\in Y := \{y | y \text{ observed in house poll or } y \text{ imputed}\}\\
 y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
 \text { for } t>1: \beta_{i t} & \sim N\left(\beta_{i, t-1}, (\sigma_{\beta}^{2})\right) \\
 \text { for } t=1: \beta_{i 1} & \sim N\left( \mu_0, \sigma^{2}_0\right) \\
@@ -860,9 +855,9 @@ y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
 \end{aligned}
 $$
 
-Where $k$ index the polls or the imputed polls, $i$ index the congressional district, and $t$ index the polls date. $i[k]$ represents the $k^{th}$ poll's corresponding congressional district index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index.
+Where $k$ indexes the polls or the imputed polls, $i$ indexes the congressional district, and $t$ indexes the polls' date. $i[k]$ represents the $k^{th}$ poll's corresponding congressional district index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index.
 
-Now we can start discussion of the imputation. To impute $y$, we are essentially "creating" more polls for those unobserved congressional districts. Suppose we want to create an $y_{k+1}$ that happened on October 10 for district 1, a non-competitive district, we look into all the voters who've registered to vote in congressional district 1 prior to October based on the 2020 voter registration file snapshot dataset. Suppose $n_{k+1}$ voters have registered, we use the model in our interim report to predict who among these $n_{k+1}$ voters are likely to vote. Suppose there are $n^*_{k+1}$ likely voters. Then we calculate the percentage of voters who are republicans. Such percentage is the value we've imputed for $y_{k+1}$, which will be served as an additional "poll" to be fed into the Linzer model. By imputing $y_{k+1}, y_{k+2} \cdots$ for all the non-competitive districts on everyday following the above procedure, we've obtained a complete "polls record" for non-competitive districts. This can efficiently increase effective sample size for MCMC and also share mutual information on unobserved competitive districts via estimated correlation matrix. 
+Now we can start discussion of the imputation. To impute $y$, we are essentially "creating" more polls for those unobserved congressional districts. Suppose we want to create an $y_{k+1}$ that happened on October 10 for district 1, a non-competitive district. We look into all the voters who've registered to vote in congressional district 1 prior to October based on the 2020 voter registration file snapshot dataset. Suppose $n_{k+1}$ voters have registered. We use the model in our interim report to predict who among these $n_{k+1}$ voters are likely to vote. Suppose there are $n^*_{k+1}$ likely voters. Then, we calculate the percentage of voters who are Republicans. Such percentage is the value we've imputed for $y_{k+1}$, which will be served as an additional "poll" to be fed into the Linzer model. By imputing $y_{k+1}, y_{k+2} \cdots$ for all the non-competitive districts on each day following the above procedure, we've obtained a complete "polls record" for non-competitive districts. This can efficiently increase effective sample size for MCMC and also share mutual information on unobserved competitive districts via estimated correlation matrix. 
 
 Though efficient and reasonable, the imputation process above still makes strong assumptions. Thus, sensitivity analysis of imputed percentage will be further explored later in section 6.2.
 
@@ -1089,6 +1084,7 @@ model_house_3 <- function(){
 ```
 
 
+
 ```{r run jags house,eval=TRUE,cache=TRUE, include=F}
 
 house_jags_data <- list(y=house_y,t=house_t,r=house_r,
@@ -1242,18 +1238,37 @@ house_all_cong_dist_share_interval <- kbl(house_all_cong_dist_share_interval, bo
   kable_styling(latex_options = "HOLD_position")
 ```
 
+
 # 4 Diagnostic and Validation
 
 ## 4.1 Model Diagnostic
 
-Due to the fact that the parameter set is sparse -- that is, $\beta$ matrix has very few observations due to the lack of poll data, it is necessary to test the convergence of MCMC. We've run 6 MCMC chains on the input data for all the 3 models. Below in appendix (******) is some randomly selected model parameters' traceplot. The reason for only illustrating some of them is that the models have too many parameters to keep track of, thus it is not feasible to illustrate them all. Trace plot shows no significant convergent issues. Besides, the Gelman Rubin test has returned estimated Rhat to be 1.042, 1051, and 1.003, showing sufficient mixing. This holds for all the 3 MCMC models. Thus, we can deduce that MCMC has sufficiently converged.
+Due to the fact that the parameter set is sparse -- that is, $\beta$ matrix has very few observations due to the lack of poll data, it is necessary to test the convergence of MCMC. We've run 6 MCMC chains on the input data for all the 3 models. Below in appendix (--------) is some randomly selected model parameters' traceplot. The reason for only illustrating some of them is that the models have too many parameters to keep track of. Thus, it is not feasible to illustrate them all. Trace plots show no significant convergent issues. Besides, the Gelman Rubin test has returned estimated Rhat to be 1.042, 1051, and 1.003, showing sufficient mixing. This holds for all the 3 MCMC models. Thus, we can deduce that MCMC has sufficiently converged.
 
 ## 4.2 Results Validation and Sanity Check
+
+### 4.2.1 Presidential winner and EC vote share
+
+Our model predicts that there is a 67.4% chance Biden will win the election. The median number of electoral college votes that our model simulates that Biden will win is 303 and the 95% confidence interval is (230, 387). We compared this to estimates from other publicly available models. FiveThirtyEight predicts Biden will win with an 89% probability and that Biden will win 348 electoral college votes [5]. The Economist model predicts that there is a 96% probability that Biden will win and the median number of EC votes that their model simulates Biden will win is 350 with a 95% confidence interval of (260, 420) [3]. Our model predicts the same outcome, but is slightly more conservative which we think is appropriate given how "sure" the 2016 models were that Clinton would win and how wrong they turned out to be in reality. In terms of swing states that will likely determine the EC vote share, our model predictions differ from those of FiveThirtyEight and the Economist. Our model and both of theirs predict that AZ, NC, MI, WI, MN, FL, PA, NV and NH are the swing states that Biden will win. This makes sense because these swing states are the ones that are the least contentious and have historically (before 2016), voted democrat more often [8]. Our models along with theirs predict that IA, TX, and OH are swing states that Trump will win, which makes sense because in 2016 these were the swing states that Trump won by the largest margin [9]. Our models differ since we predict that Trump will also win the EC votes from GA. This is appropriate because Trump won this state by a larger margin in 2016 than the other swing states that we predict Biden will win (NYT). Our model in general makes these predictions with less certainty (probabilities closer to 50%) than the FiveThirtyEight and Economist models. We believe this is appropriate that our model is more conservative on Biden winning EC votes from swing states because only 30.3 % of Republicans have done early voting as of 10/31/2020 [5]. In these states specifically, Republicans have shown up to the polls closer towards the end of early voting and the gap has narrowed [10].
+
+### 4.2.2 Partisan Control of the Senate
+
+There are 35 seats up for reelection and the Democrats need to win 3-4 more seats to take control. 16 states have no elections this cycle. Two states have special elections, which means that they were not supposed to have one of their seats up for election this year, but due to special circumstances, they now do. Arizona is having a special election because the incumbent, John McCain (R) died during his term [15]. Georgia is also having a special election because the incumbent, Johnny Isakson (R), resigned after he was diagnosed with Parkinson's [16]. Our model predicts that Republicans have a higher likelihood of winning Senate elections in AZ, NC, IA, GA, TX, AK, AL, KY, WY, MT, KS, ME, SC, MS, TN, NE, AR, OK, OR, and ID. We differ from the FiveThirtyEight predictions because they claim WV and LA will go red and AZ, NC, ME, and OR will go blue. In LA, there has been recent talk of a potential run-off election given how close the polls have shown the candidates to be so our prediction makes sense [19]. We believe that our predictions that ME, OR, AZ, and NC will go red are reasonable because many undecided voters are leaning Republican and margins between candidates have narrowed this week $[17]$ $[10]$. Overall, we predict that there is a 20.03%  probability that the senate will remain in Republican control which is reasonable given that the democrats only need to flip a few more seats to achieve this and it is close to FiveThirtyEight's 25% probability [5]. 
+
+### 4.2.3 NC Senate Election
+
+Our model predicts that the median amount of votes that Thom Tillis (R) will win is 48.27% with a 95% confidence interval of (45.65%, 50.71%). Our model estimates that his probability of winning is 57.8%. Note that Tillis does not need to win over 50% of votes to win the election because of the votes that go towards third parties. He just needs to win more votes than Cunningham.  Our estimates make sense because Tillis is the incumbent, but the race is very close due to controversy surrounding his outspoken support for Trump and his opposition to the Affordable Care Act [11]. Tillis has joined Trump at many NC rallies and has support from Vice President Pence. This means that the race will likely follow the results of the General Election (i.e. Trump's fate in NC will likely determine Tillis's) [11]. FiveThirtyEight's latest prediction is that Cunningham will win and predicts that Tillis will gain 46% of the vote with a 4% chance of being elected and the Economist's latest prediction has Tillis winning 48.4% of the vote with a 27% probability of winning $[5]$ $[3]$. However, we believe our model is reasonable due to the recent scandal leaking private text messages revealing that Cunningham was having an affair. The gap between them has begun to close [12]. 
+
+### 4.2.4 Congressional District election for the 13 NC districts
+
+All districts, except the 11th, have incumbents running for reelection. In district 2, the opponent has dropped out so the representative is automatically Republican George Holding [12]. The 11th district has been 9 points more Republican than the national average in the last 2 elections [12]. However, this district historically has followed the general election. Ballotpedia has combined various polls to predict that the district is leaning Republican and that Mark Meadows (R) will get 59.2% of the vote share [12]. The median prediction from our model simulations is that Meadows will gain 48.41% of votes with a 36.57% probability of winning. We think this is reasonable given how dependent the district is on the general election. We predict that districts 1, 4, 5, 6, 7, 10, and 12 are almost certain to elect their incumbents. This makes sense for these districts because in these districts the incumbent has been reelected several times [12]. That leaves districts 9, 8, 3, and 13. District 9 is a close race because the current incumbent, Dan Bishop (R) , sponsored the infamous House Bill 2, otherwise known as the "bathroom bill," which told transgender people to use the bathrooms that matched their birth sex. The median prediction from our model simulations is that Bishop will gain 49.55% of votes with a 40.17% probability of winning. This makes sense given how much bad press Bishop has gotten since he supported the "bathroom bill" [13]. District 8 votes 5% points more Republican than the national average, but the district has recently gone through redistricting which will make many voters unfamiliar to incumbent Richard Hudson (R) $[12]$ $[14]$. Given this, the race will be close, so our simulations predict that Hudson will win 49.55% of the vote share and that he has a 64.33% probability of being elected. In district 3 and 13, there is a 66.77% and 68.97% probability that the Republican incumbent wins, respectively. Even though these Republican incumbents are favored to win, these districts typically follow the partisan results of the general election [12]. Overall, our prediction estimates make sense based on context. 
 
 
 # 5 Modeling Result
 
 ## 5.1 Presidential Election and Electoral Vote
+
+Our model predicts that Biden will win with a percentage of 67.4% and the electoral college vote will be 303 (rounded from 303.4) with the 95% confidence interval being (230, 387) votes as shown in Table 1.
 
 ```{r 5.1 result, echo=F}
 print(paste("biden wins", swing_state_prob)) #swing state probility of biden win
@@ -1264,6 +1279,8 @@ ec_interval #kable of ec vote CI
 
 ## 5.2 Whether Senate Remains in Republican Control
 
+Our model predicts that the Republican Party will remain in control of the Senate with only a probability of 20%, meaning it is more likely that the Democratic Party will be in control of the Senate.
+
 ```{r 5.2 result, echo=F}
 print(paste("republican control senate",rep_senate_prob)) # probability REP controls senate
 senate_dis # plot total REP senators
@@ -1271,6 +1288,8 @@ senate_dis # plot total REP senators
 
 
 ## 5.3 13 NC Congressional District Result
+
+In North Carolina, Tom Tillis is predicted to win the Senate seat with a probability of 57.8%.
 
 ```{r 5.3 result, echo=F}
 
@@ -1281,6 +1300,7 @@ house_all_cong_dist_share_interval # Kable congressional district REP share pct 
 
 ## 5.4 NC Senator Election
 
+In District 1 of North Carolina, G. K. Butterfield (D) is predicted to win. In District 2, Alan Swain (R) is predicted to win, and in District 3, Gregory Murphy (R) will win. District 4 is predicted to elect David Price (D). District 5 is predicted to elect Virginia Foxx (R). In District 6, Kathy Manning (D) is predicted to be elected. In District 7, David Rouzer (R) is predicted to win, and in District 8, Richard Hudson (R) is predicted to win. In District 9, Cynthia Wallace (D) is predicted to win, and in District 10, Patrick T. McHenry (R) is predicted to win. Morris Davis (D) is predicted to win District 11. In District 12, Alma Adams (D) is predicted to win. Finally, in District 13, Ted Budd (R) is predicted to win. The probability and confidence intervals for the republican party winning the congressional district for each of North Carolina's 13 Congressional Districts are shown in Table 3 below. 
 
 ```{r 5.4 result, echo=F}
 
@@ -1293,7 +1313,7 @@ print(paste("Tome Tillis Win Prob", tom_win_prob)) # Tom Win Prob
 
 ## 6.1 Informative Prior Check
 
-As indicated in the model above in section 3, compared to the size of the $\beta$ matrix, the total number of samples to $y_k$ is comparably small. Thus, we're concerned that variation of prior values of parameters can lead to drastically different results. As we've already defined in section 3, we've set the prior mean to be 50%. This prior mean value is arguably the most reasonable value. Thus, this sensitivity check section will not test sensitivity of $\mu_0$. However, all the other parameters, including $\nu_y, \nu_\beta, \tau_y, \tau_\beta, \sigma^2$ controls the prior population (inverse of uncertainty) of belief that the vote share percentage is $50\%$. Augmenting their values will make the prior less informative, whereas decreasing their values will make the Linzer model's posterior harder to deviate from generating 50% vote share percentage. Thus, we're testing the sensitivity to such uncertainty preset in our model by comparing the set of prior defined in section 3 to the following set of priors:
+As indicated in the model above in section 3, compared to the size of the $\beta$ matrix, the total number of samples to $y_k$ is comparably small. Thus, we're concerned that variation of prior values of parameters can lead to drastically different results. As we've already defined in section 3, we've set the prior mean to be 50%. This prior mean value is arguably the most reasonable value. Thus, this sensitivity check section will not test sensitivity of $\mu_0$. However, all the other parameters, including $\nu_y, \nu_\beta, \tau_y, \tau_\beta, \sigma^2$ control the prior population (inverse of uncertainty) of belief that the vote share percentage is $50\%$. Augmenting their values will make the prior less informative, whereas decreasing their values will make the Linzer model's posterior harder to deviate from generating 50% vote share percentage. Thus, we're testing the sensitivity to such uncertainty preset in our model by comparing the set of prior defined in section 3 to the following set of priors:
 
 $$
 \begin{aligned}
@@ -1309,11 +1329,37 @@ $$
 The result is also attached in Table (------) (------) (------) (------) (------) (------) in the appendix. In all these tables, the "Official Model" column gives point or interval estimates using the prior in section 3, the model section, whereas the "Informative Prior" column gives all the same results using the above set of prior.
 Based on the observation, though the range of uncertainty parameters have been adjusted to 2 digits of magnitude, both estimates are still very similar. Thus, this justifies 2 facts: 
 
-** The sample size in the Linzer Model is sufficient in providing enough information (rather than only drawing information from the priors) to inform posterior distributions
+* The sample size in the Linzer Model is sufficient in providing enough information (rather than only drawing information from the priors) to inform posterior distributions
 
-** Our model generates convergent results that are insusceptible from prior choice.
+* Our model generates convergent results that are insusceptible from prior choice.
 
-Thus, our model outputs are valid and trustworthy
+Thus, our model outputs are valid and trustworthy.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 6.2 Imputation Perturbation Check
@@ -1322,31 +1368,203 @@ As mentioned before in section 3.3, the congressional district prediction utiliz
 
 The perturbation is conducted as follows. For all the imputed $y$, we add independent yet identical Gaussian noise to them. 
 
-$$y := y + \epsilon \quad \epsilon \sim N(0,\kappa^2)$$
+$$
+y_{\text{perturbed imputation}} := y_{\text{original imputation}} + \epsilon \quad \epsilon \sim N(0,\kappa^2)
+$$
 
 We're concerned whether 10% deviation of imputed vote share percentage from the truth vote share percentage will generate completely different results. Therefore, we chose $\kappa = 5\%$, that $10\%$ range is plus or minus 2 standard deviations from the mean. This is the perturbation process we've conducted.
 
 Similarly, before and after perturbation, the results are all attached in Table (------) (------) (------) (------) (------) (------). This time, the "Imputation Perturbation" column contains all the estimated results. We still observe no major difference between the estimated probability or vote share interval estimates. Thus, small errors introduced in or imputation won't affect the final prediction too much. Thus, the results generated upon imputed values are credible.
 
 
+
 # Bibliography
-[1] https://blueprint.ucla.edu/feature/are-polls-reliable/
 
-[2] https://newrepublic.com/article/154124/polling-industry-crisis
+[1] Boyarsky, B. (2019). Are Polls Reliable? Retrieved November 02, 2020, from https://blueprint.ucla.edu/feature/are-polls-reliable/ 
 
-[3] https://projects.economist.com/us-2020-forecast/president/how-this-works?fbclid=IwAR2DIgVtL4uVjyKiVrpj9f3KMiUyOzvmsTKHeBX5jgAbxS5VHsaw0TyOOi8
+[2] Shapiro, W. (2019, June 21). The Polling Industry Is in Crisis. Retrieved November 02, 2020, from https://newrepublic.com/article/154124/polling-industry-crisis 
 
-[4] Linzer Paper (https://doi.org/10.1080/01621459.2012.737735)
+[3] How The Economist presidential forecast works. (n.d.). Retrieved November 02, 2020, from https://projects.economist.com/us-2020-forecast/president/how-this-works?fbclid=IwAR2DIgVtL4uVjyKiVrpj9f3KMiUyOzvmsTKHeBX5jgAbxS5VHsaw0TyOOi8 
 
-[5] https://projects.fivethirtyeight.com/polls/senate/
+[4] Linzer, D. A. (2013). Dynamic Bayesian Forecasting of Presidential Elections in the States. Journal of the American Statistical Association, 108(501), 124-134. doi:10.1080/01621459.2012.737735 
 
-[6] https://projects.economist.com/us-2020-forecast/president/how-this-works.
+[5] DataDhrumil. (2020, November 02). U.S. Senate Polls. Retrieved November 02, 2020, from https://projects.fivethirtyeight.com/polls/senate/ 
 
-[7] https://worldpopulationreview.com/state-rankings/blue-states
+[6] How The Economist presidential forecast works. (2020). Retrieved November 02, 2020, from https://projects.economist.com/us-2020-forecast/president/how-this-works 
 
+[7] Blue States 2020. (n.d.). Retrieved November 02, 2020, from https://worldpopulationreview.com/state-rankings/blue-states 
+
+[8] Staff, N. (2016, November 2). A recent voting history of the 15 Battleground states. Retrieved November 02, 2020, from https://constitutioncenter.org/blog/voting-history-of-the-15-battleground-states 
+
+[9] 2016 Presidential Election Results: Donald J. Trump Wins. (2017, August 9). Retrieved November 02, 2020, from https://www.nytimes.com/elections/2016/results/president 
+
+[10] Riccardi, N., & Kastanis, A. (2020, October 25). Early vote total exceeds 2016; GOP chips at Dems' advantage. Retrieved November 02, 2020, from https://apnews.com/article/election-2020-donald-trump-politics-florida-elections-509ad83f6d40e08fb715da44548f62e0 
+
+[11] Arkin, J. (2020, November 01). Tillis scrambles, Cunningham lies low in closing days of N.C. Senate race. Retrieved November 02, 2020, from https://www.politico.com/news/2020/11/01/tillis-cunningham-north-carolina-senate-race-final-days-433783 
+
+[12] United States Senate election in North Carolina, 2020. (n.d.). Retrieved November 02, 2020, from https://ballotpedia.org/United_States_Senate_election_in_North_Carolina,_2020 
+
+[13] Dalesio, E. P. (2019, May 11). North Carolina 'bathroom bill' sponsor bidding for US House. Retrieved November 02, 2020, from https://apnews.com/article/44b86b14141a41a6a3efc857273eb7d3 
+
+[14] Anderson, B., & Robertson, G. D. (2020, October 30). Republicans on defense in North Carolina congressional races. Retrieved November 02, 2020, from https://apnews.com/article/election-2020-donald-trump-legislature-hudson-north-carolina-798c7de60ca763fe9686c69d39b85590 
+
+[15] Arizona race could give Democrats extra Senate seat for supreme court fight. (2020, September 20). Retrieved November 02, 2020, from https://www.theguardian.com/us-news/2020/sep/20/arizona-democrats-senate-race-supreme-court-ruth-bader-ginsburg 
+
+[16] Everett, B. (2019, August 28). Sen. Johnny Isakson to resign at end of the year. Retrieved November 02, 2020, from https://www.politico.com/story/2019/08/28/sen-johnny-isakson-to-resign-at-end-of-the-year-1476655 
+
+[17] Shepherd, M., Andrews, C., & Piper, J. (2020, November 02). New polls show Maine's US Senate race is still wracked with uncertainty. Retrieved November 02, 2020, from https://bangordailynews.com/2020/11/02/politics/daily-brief/new-polls-show-maines-us-senate-race-is-still-wracked-with-uncertainty/ 
+
+[18] Dl.ncsbe.gov. 2020. [online] Available at: https://dl.ncsbe.gov/?prefix=data/Snapshots/  [Accessed 1 November 2020].
+
+[19] https://www.theadvocate.com/baton_rouge/news/politics/elections/article_4923a528-1c94-11eb-aa24-5bb599e01390.html
 
 
 \newpage
+
+# Appendix A
+
+Model 1, to Model Presidential Election Outcome and EC Vote Share
+
+$$
+\begin{aligned}
+y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
+\text { for } t>1: \beta_{i t} & \sim N\left(\beta_{i, t-1}, (\sigma_{\beta}^{2})\right) \\
+\text { for } t=1: \beta_{i 1} & \sim N\left( \mu_0, \sigma^{2}_0\right) \\
+(\sigma_y^2)_{i[k]} &\sim \text{InvGamma}(\nu_y, \tau_y)\\
+(\sigma_\beta^2) &\sim \text{InvGamma}(\nu_\beta, \tau_\beta)\\\\
+\mu_0 &\sim N(50, 17)\\
+\sigma_0^2 &\sim \text{InvGamma}(\frac{1}{2}, \frac{1}{2})\\
+\nu_y &\sim \text{Uni}(0, 100)\\
+\tau_y &\sim \text{Uni}(0, 100)\\
+\nu_\beta &\sim \text{Uni}(0, 100)\\
+\tau_\beta &\sim \text{Uni}(0, 100)\\
+\end{aligned}
+$$
+
+Where $k$ index the polls, $i$ index the states, and $t$ index the date. $i[k]$ represents the $k^{th}$ poll's corresponding state index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index. We input this model into MCMC sampler and sample $\beta_{i,T} \forall i$ where $T$ denotes the last day of election. Thus, by taking $\beta_{i,T} \forall i$ of all MCMC iterations, we can obtain the empirical posterior distribution of electoral college vote share of all modeled swing states (Florida, Georgia, Iowa, North Carolina, Ohio, Texas, Arizona, Michigan, Minnesota, Nevada, New Hampshire, Pennsylvania, and Wisconsin).
+
+For each MCMC iteration, all the $\beta_{i,T} \forall i$ are compared against 50%. If it is bigger than 50%, it means that in the corresponding state, Biden has won all the electoral votes of its state, therefore taking 100% percent of the electoral votes of the state. Otherwise, Biden takes 0%. Therefore, we create a list of 0% and 100%, used to dot product with the number of electoral votes for each state, then plus the total electoral votes of all the "Blue Wall" states, we end up with the total number of Electoral Vote for Biden in this MCMC iteration. Doing the above calculation for all MCMC iteration, we can obtain the posterior distribution of EC votes that Biden wins. From which, we can calculate the probability that Biden wins the election, which equals the number of EC votes bigger than 270 over the total MCMC iterations.
+
+
+Model 2, to Model Senator and NC Senator Election
+
+$$
+\begin{aligned}
+y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
+\text { for } t>1: \beta_{i t} & \sim N\left(\beta_{i, t-1}, (\sigma_{\beta}^{2})\right) \\
+\text { for } t=1: \beta_{i 1} & \sim N\left( \mu_0, \sigma^{2}_0\right) \\
+(\sigma_y^2)_{i[k]} &\sim \text{InvGamma}(\nu_y, \tau_y)\\
+(\sigma_\beta^2) &\sim \text{InvGamma}(\nu_\beta, \tau_\beta)\\\\
+\mu_0 &\sim N(50, 17)\\
+\sigma_0^2 &\sim \text{InvGamma}(\frac{1}{2}, \frac{1}{2})\\
+\nu_y &\sim \text{Uni}(0, 100)\\
+\tau_y &\sim \text{Uni}(0, 100)\\
+\nu_\beta &\sim \text{Uni}(0, 100)\\
+\tau_\beta &\sim \text{Uni}(0, 100)\\
+\end{aligned}
+$$
+
+Where $k$ index the polls, $i$ index the states, and $t$ index the date. $i[k]$ represents the $k^{th}$ poll's corresponding state index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index. We input this model into MCMC sampler and sample $\beta_{i,T} \forall i$ where $T$ denotes the last day of election. Thus, by taking $\beta_{i,T} \forall i$ of all MCMC iterations, we can obtain the empirical posterior distribution of senator vote share of all modeled states (all states excluding Wisconsin, Ohio, Washington, Maryland, Pennsylvania, California, New York, Hawaii, Connecticut, Nevada, Indiana, North Dakota, Missouri, Utah, Vermont and Florida).
+
+
+For each MCMC iteration, all the $\beta_{i,T} \forall i$ are compared against 50%. If it is bigger than 50%, it means that in the corresponding state, Republican has won all the senator spots of its state, therefore taking 100% percent of the senator spots of the state. Otherwise, Republican take 0%. Therefore, we create a list of 0% and 100%, used to dot product with the number of available senator spots for each state, then plus the total existing republican senators of all the non-modeled states, we end up with the total number of senators for Republican Party in this MCMC iteration. Doing the above calculation for all MCMC iteration, we can obtain the posterior distribution of the number of senators that Republican have in the Senate after this election. From which, we can calculate the probability that Republican controls the Senate, which equals the number of Republican Senators bigger than 50 over the total MCMC iterations.
+
+Model 3, to model 13 Congressional District
+
+Similarly, we have the same model.
+
+$$
+\begin{aligned}
+y_{k} &\in Y := \{y | y \text{ observed in house poll or } y \text{ imputed}\} \\
+y_{k} & \sim N\left(\beta_{i[k] t[k]}, (\sigma_y^2)_{i[k]}\right) \\
+\text { for } t>1: \beta_{i t} & \sim N\left(\beta_{i, t-1}, (\sigma_{\beta}^{2})\right) \\
+\text { for } t=1: \beta_{i 1} & \sim N\left( \mu_0, \sigma^{2}_0\right) \\
+(\sigma_y^2)_{i[k]} &\sim \text{InvGamma}(\nu_y, \tau_y)\\
+(\sigma_\beta^2) &\sim \text{InvGamma}(\nu_\beta, \tau_\beta)\\\\
+\mu_0 &\sim N(50, 17)\\
+\sigma_0^2 &\sim \text{InvGamma}(\frac{1}{2}, \frac{1}{2})\\
+\nu_y &\sim \text{Uni}(0, 100)\\
+\tau_y &\sim \text{Uni}(0, 100)\\
+\nu_\beta &\sim \text{Uni}(0, 100)\\
+\tau_\beta &\sim \text{Uni}(0, 100)\\
+\end{aligned}
+$$
+
+Where $k$ indexes the polls or the imputed polls, $i$ indexes the congressional district, and $t$ indexes the polls' date. $i[k]$ represents the $k^{th}$ poll's corresponding congressional district index, and $t[k]$ represents the $k^{th}$ poll's corresponding date index. 
+
+However, we're creating more synthetic $y$ into the house_polls dataset to enlarge. These imputed $Y := \{y | y \text{ observed in house poll or } y \text{ imputed}\}$. We only impute $y$ values for noncompetitive districts including district 1, 4, 5, 6, 10, 12. The imputation procedure follows as below:
+
+First, we use the trained model from the interim report to predict who are likely to vote in the 2020 voter registration snapshot dataset. Below is the model:
+
+
+$$
+\begin{aligned}
+  y_i &= \text{Bernoulli}(p_i)\\
+  logit(p_i) &= \beta_0 + \beta_{\text{ status code}} \text{ status code}_i + \beta_{\text{ race}} \text{ race}_i+  \beta_{\text{ age}} \text{ age}_i + \beta_{\text{ drivers licence}} \text{ drivers license}_i \\
+  &+ \beta_{\text{ congressional district}} \text{ congressional district}_i + \beta_{\text{ ethnic}} \text{ ethnic}_i \\
+  &+ \beta_{\text{race : age}} \text{ race}_i \times \text{age}_i + \beta_{\text{congressional district : age}} \text{ congressional district}_i \times \text{age}_i
+\end{aligned}
+$$
+
+For each registered voter, predict whether they vote or not using the model above. After that, we only take the likely voters for our further imputation analysis.
+
+Then, for all $t < T$, where T is the total number of days prior to election days we're using for modeling (we set T=100), do the following. For each noncompetitive district, indexed as $i$, Count the total number of voters who registered before day t, denoted as $V_{t,1}$. Also, count how many are affiliated as republican voters among these $V_{t,1}$ people. Denote this number as $r_{t,1}$. Therefore, we impute $y = r_{t,1} / V_{t,1}$, which is a "synthetic" poll data for a non-competitive district on a specific date. Finally, just add this $y$ into $Y$.
+
+We only impute the above value for day $t$ prior to 3 days before final election to enable some uncertainty.
+
+
+# Appendix B
+
+List of data sets/data sources
+
+* 1. House Polls
+
+This dataset comes from the fivethirtyeight website and contains candidate party information, method of poll, and more information on the poll for the House of Representative polls.
+
+* 2. Senate Polls
+
+This dataset comes from the fivethirtyeight website and contains candidate party information, method of poll, and more information on the poll for the Senate polls.
+
+* 3. Presidential Election Polls 2020
+
+This dataset comes from the fivethirtyeight website and contains information on biden margin, mode of poll, number of observations, pollster information, and state. 
+
+* 4. NC Voter History Statewide Small (VR_Snapshot)
+
+NC Voter History Statewide Small provides voter history information for North Carolina voters including their voting method, which election, and registered party.
+NCSBE Snapshots
+
+
+Model 1, to Model Presidential Election Outcome and EC Vote Share
+
+Dataset 3 [Presidential Election Polls 2020]
+
+* $k$ `polls` variable
+
+* $i$ index `state`, with $i[k]$ the poll's state index
+
+* $t$ index `date`, with $t[k]$ the poll date index
+ 
+Model 2, to Model Senator and NC Senator Election
+
+Dataset 2 [Senate Polls] and Dataset #4 [NC Voter Statewide Small]
+
+* $k$ `polls` variable
+
+* $i$ index `state`, with $i[k]$ the poll's state index
+
+* $t$ index `date`, with $t[k]$ the poll date index
+
+Model 3, to Model 13 Congressional District
+
+Dataset 4 [NC Voter Statewide Small (NCSBE Snapshots) ] 
+
+* $k$ `polls` variable
+
+* $i$ index `congressional_district`, with $i[k]$ the poll's congressional district index
+
+* $t$ index  `date`, with $t[k]$ the poll date index
+
 
 # Appendix
 
@@ -1408,4 +1626,3 @@ mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)
 mean(as.data.frame(jags_sims_senator$BUGSoutput$summary)$Rhat)
 mean(as.data.frame(jags_sims_house$BUGSoutput$summary)$Rhat)
 ```
-

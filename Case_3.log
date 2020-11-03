@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.1)  2 NOV 2020 16:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.1)  2 NOV 2020 22:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -964,188 +964,201 @@ LaTeX Font Info:    Trying to load font information for U+wasy on input line 14
 File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 )
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-90.
+86.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 ) [1
 
 {c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex
 .map}]
-<Case_3_files/figure-latex/eda-methods-1.pdf, id=99, 650.43pt x 289.08pt>
+<Case_3_files/figure-latex/eda-methods-1.pdf, id=127, 650.43pt x 289.08pt>
 File: Case_3_files/figure-latex/eda-methods-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-methods-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-methods-1.pdf  used on i
-nput line 258.
+nput line 278.
 (pdftex.def)             Requested size: 469.76817pt x 208.78584pt.
-<Case_3_files/figure-latex/eda-state-1.pdf, id=100, 867.24pt x 289.08pt>
+<Case_3_files/figure-latex/eda-state-1.pdf, id=128, 1011.78pt x 289.08pt>
 File: Case_3_files/figure-latex/eda-state-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-state-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-state-1.pdf  used on inp
-ut line 272.
-(pdftex.def)             Requested size: 469.75827pt x 156.58607pt.
+ut line 292.
+(pdftex.def)             Requested size: 469.76266pt x 134.2179pt.
 [2 <./Case_3_files/figure-latex/eda-methods-1.pdf>]
-<Case_3_files/figure-latex/eda-house-senate-polls-1.pdf, id=112, 578.16pt x 216
+<Case_3_files/figure-latex/eda-house-senate-polls-1.pdf, id=140, 578.16pt x 216
 .81pt>
 File: Case_3_files/figure-latex/eda-house-senate-polls-1.pdf Graphic file (type
  pdf)
 <use Case_3_files/figure-latex/eda-house-senate-polls-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-house-senate-polls-1.pdf
-  used on input line 281.
+  used on input line 301.
 (pdftex.def)             Requested size: 469.75385pt x 176.15768pt.
-<Case_3_files/figure-latex/eda-biden-1.pdf, id=113, 289.08pt x 180.675pt>
+<Case_3_files/figure-latex/eda-biden-1.pdf, id=141, 289.08pt x 180.675pt>
 File: Case_3_files/figure-latex/eda-biden-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-biden-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-biden-1.pdf  used on inp
-ut line 293.
+ut line 310.
 (pdftex.def)             Requested size: 289.07928pt x 180.67455pt.
-[3 <./Case_3_files/figure-latex/eda-state-1.pdf> <./Case_3_files/figure-latex/e
-da-house-senate-polls-1.pdf>]
-<Case_3_files/figure-latex/eda-ncmap-1.pdf, id=131, 289.08pt x 216.81pt>
+<Case_3_files/figure-latex/eda-ncmap-1.pdf, id=142, 289.08pt x 216.81pt>
 File: Case_3_files/figure-latex/eda-ncmap-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/eda-ncmap-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/eda-ncmap-1.pdf  used on inp
-ut line 306.
+ut line 325.
 (pdftex.def)             Requested size: 289.09251pt x 216.81938pt.
-[4 <./Case_3_files/figure-latex/eda-biden-1.pdf> <./Case_3_files/figure-latex/e
-da-ncmap-1.pdf>]
+[3 <./Case_3_files/figure-latex/eda-state-1.pdf> <./Case_3_files/figure-latex/e
+da-house-senate-polls-1.pdf> <./Case_3_files/figure-latex/eda-biden-1.pdf>] [4 
+<./Case_3_files/figure-latex/eda-ncmap-1.pdf>]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 3
-64.
+83.
 (c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [5] [6]
-<Case_3_files/figure-latex/5.1 result-1.pdf, id=171, 505.89pt x 361.35pt>
+) [5] [6] [7]
+<Case_3_files/figure-latex/5.1 result-1.pdf, id=206, 505.89pt x 361.35pt>
 File: Case_3_files/figure-latex/5.1 result-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/5.1 result-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/5.1 result-1.pdf  used on in
-put line 489.
+put line 632.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[7 <./Case_3_files/figure-latex/5.1 result-1.pdf>]
-<Case_3_files/figure-latex/5.2 result-1.pdf, id=183, 505.89pt x 361.35pt>
+[8]
+<Case_3_files/figure-latex/5.2 result-1.pdf, id=212, 505.89pt x 361.35pt>
 File: Case_3_files/figure-latex/5.2 result-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/5.2 result-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/5.2 result-1.pdf  used on in
-put line 513.
+put line 660.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[8 <./Case_3_files/figure-latex/5.2 result-1.pdf>]
-<Case_3_files/figure-latex/5.4 result-1.pdf, id=195, 505.89pt x 361.35pt>
+[9 <./Case_3_files/figure-latex/5.1 result-1.pdf>] [10 <./Case_3_files/figure-l
+atex/5.2 result-1.pdf>]
+<Case_3_files/figure-latex/5.4 result-1.pdf, id=235, 505.89pt x 361.35pt>
 File: Case_3_files/figure-latex/5.4 result-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/5.4 result-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/5.4 result-1.pdf  used on in
-put line 607.
+put line 771.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[9] [10 <./Case_3_files/figure-latex/5.4 result-1.pdf>]
-Overfull \hbox (259.60635pt too wide) in paragraph at lines 699--701
-[]\T1/lmr/m/n/10 [3] []$https : / / projects . economist . com / us -[] 2020 -[
-] forecast / president / how -[] this -[] works ? fbclid = IwAR2DIgVtL4uVjyKiVr
-pj9f3KMiUyOzvmsTKHeBX5jgAbxS5VHsaw0TyOOi8$[] 
+[11] [12 <./Case_3_files/figure-latex/5.4 result-1.pdf>]
+Overfull \hbox (211.49516pt too wide) in paragraph at lines 870--873
+\T1/lmr/m/n/10 projects . economist . com / us -[] 2020 -[] forecast / presiden
+t / how -[] this -[] works ? fbclid = IwAR2DIgVtL4uVjyKiVrpj9f3KMiUyOzvmsTKHeBX
+5jgAbxS5VHsaw0TyOOi8$[] 
  []
 
-[11]
-<Case_3_files/figure-latex/appendix-eda-1.pdf, id=229, 578.16pt x 289.08pt>
+[13]
+Underfull \hbox (badness 1221) in paragraph at lines 925--928
+\T1/lmr/m/n/10 02, 2020, from []$https : / / www . politico . com / story / 201
+9 / 08 / 28 / sen -[] johnny -[] isakson -[] to -[] resign -[] at -[] end -[] o
+f -[] the -[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 938--940
+[]\T1/lmr/m/n/10 [19] []$https : / / www . theadvocate . com / baton _ rouge / 
+news / politics / elections / article _ 4923a528 -[] 1c94 -[] 11eb -[]
+ []
+
+[14] [15] [16] [17]
+<Case_3_files/figure-latex/appendix-eda-1.pdf, id=319, 578.16pt x 289.08pt>
 File: Case_3_files/figure-latex/appendix-eda-1.pdf Graphic file (type pdf)
 <use Case_3_files/figure-latex/appendix-eda-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/appendix-eda-1.pdf  used on 
-input line 717.
+input line 1201.
 (pdftex.def)             Requested size: 469.75385pt x 234.8769pt.
-<Case_3_files/figure-latex/output all results-1.pdf, id=230, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-1.pdf, id=320, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-1.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-1.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-1.pdf  us
-ed on input line 723.
+ed on input line 1207.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/output all results-2.pdf, id=231, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-2.pdf, id=321, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-2.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-2.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-2.pdf  us
-ed on input line 724.
+ed on input line 1208.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[12 <./Case_3_files/figure-latex/appendix-eda-1.pdf> <./Case_3_files/figure-lat
-ex/output all results-1.pdf>] [13 <./Case_3_files/figure-latex/output all resul
-ts-2.pdf>]
-<Case_3_files/figure-latex/output all results-3.pdf, id=262, 505.89pt x 361.35p
+[18 <./Case_3_files/figure-latex/appendix-eda-1.pdf>] [19 <./Case_3_files/figur
+e-latex/output all results-1.pdf>] [20 <./Case_3_files/figure-latex/output all 
+results-2.pdf>]
+<Case_3_files/figure-latex/output all results-3.pdf, id=357, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-3.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-3.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-3.pdf  us
-ed on input line 796.
+ed on input line 1280.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/output all results-4.pdf, id=263, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-4.pdf, id=358, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-4.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-4.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-4.pdf  us
-ed on input line 802.
+ed on input line 1286.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[14 <./Case_3_files/figure-latex/output all results-3.pdf>] [15 <./Case_3_files
-/figure-latex/output all results-4.pdf>] [16]
-<Case_3_files/figure-latex/output all results-5.pdf, id=295, 505.89pt x 361.35p
+[21 <./Case_3_files/figure-latex/output all results-3.pdf>] [22 <./Case_3_files
+/figure-latex/output all results-4.pdf>] [23]
+<Case_3_files/figure-latex/output all results-5.pdf, id=389, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-5.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-5.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-5.pdf  us
-ed on input line 931.
+ed on input line 1415.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-<Case_3_files/figure-latex/output all results-6.pdf, id=296, 505.89pt x 361.35p
+<Case_3_files/figure-latex/output all results-6.pdf, id=390, 505.89pt x 361.35p
 t>
 File: Case_3_files/figure-latex/output all results-6.pdf Graphic file (type pdf
 )
 <use Case_3_files/figure-latex/output all results-6.pdf>
 Package pdftex.def Info: Case_3_files/figure-latex/output all results-6.pdf  us
-ed on input line 932.
+ed on input line 1416.
 (pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
-[17]
+[24]
 
-Package xcolor Warning: Incompatible color definition on input line 934.
+Package xcolor Warning: Incompatible color definition on input line 1418.
 
-[18 <./Case_3_files/figure-latex/output all results-5.pdf>]
+[25 <./Case_3_files/figure-latex/output all results-5.pdf>]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 936.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1420.
 
-Package xcolor Warning: Incompatible color definition on input line 938.
-
-
-Package xcolor Warning: Incompatible color definition on input line 938.
+Package xcolor Warning: Incompatible color definition on input line 1422.
 
 
-Package xcolor Warning: Incompatible color definition on input line 944.
+Package xcolor Warning: Incompatible color definition on input line 1422.
 
 
-Package xcolor Warning: Incompatible color definition on input line 948.
+Package xcolor Warning: Incompatible color definition on input line 1428.
 
 
-Package xcolor Warning: Incompatible color definition on input line 948.
+Package xcolor Warning: Incompatible color definition on input line 1432.
 
 
-Package xcolor Warning: Incompatible color definition on input line 954.
+Package xcolor Warning: Incompatible color definition on input line 1432.
 
 
-Package xcolor Warning: Incompatible color definition on input line 958.
+Package xcolor Warning: Incompatible color definition on input line 1438.
 
 
-Package xcolor Warning: Incompatible color definition on input line 958.
+Package xcolor Warning: Incompatible color definition on input line 1442.
 
-[19 <./Case_3_files/figure-latex/output all results-6.pdf>] (./Case_3.aux)
+
+Package xcolor Warning: Incompatible color definition on input line 1442.
+
+[26 <./Case_3_files/figure-latex/output all results-6.pdf>] (./Case_3.aux)
 Package rerunfilecheck Info: File `Case_3.out' has not changed.
-(rerunfilecheck)             Checksum: 492009FADC17E99FB328B5CFD03E1DA0;4004.
+(rerunfilecheck)             Checksum: 3181B7ABDEE61647C5EB5CF6D937F040;5316.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 19043 strings out of 481433
- 295822 string characters out of 5918906
- 609545 words of memory out of 5000000
- 35350 multiletter control sequences out of 15000+600000
- 616450 words of font info for 125 fonts, out of 8000000 for 9000
+ 19080 strings out of 481433
+ 296304 string characters out of 5918906
+ 612883 words of memory out of 5000000
+ 35365 multiletter control sequences out of 15000+600000
+ 619445 words of font info for 126 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 66i,9n,74p,358b,480s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 66i,10n,74p,429b,436s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.en
 c}{c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/mnsymbol/Mn
 SymbolC.enc}{c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/l
@@ -1156,20 +1169,21 @@ st/fonts/enc/dvips/lm/lm-mathit.enc}{c:/Users/zd26/AppData/Roaming/TinyTeX/texm
 f-dist/fonts/enc/dvips/lm/lm-ts1.enc}<c:/Users/zd26/AppData/Roaming/TinyTeX/tex
 mf-dist/fonts/type1/public/mnsymbol/MnSymbol10.pfb><c:/Users/zd26/AppData/Roami
 ng/TinyTeX/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol7.pfb><c:/Users/zd26/
-AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/z
-d26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Use
-rs/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/
-Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><
-c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pf
-b><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17
-.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lm
-r7.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/
-lmtk10.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public
-/lm/lmtt10.pfb>
-Output written on Case_3.pdf (19 pages, 1195530 bytes).
+AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/z
+d26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Use
+rs/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:
+/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb>
+<c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.p
+fb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr1
+2.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/l
+mr17.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/l
+m/lmr7.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public
+/lm/lmtk10.pfb><c:/Users/zd26/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/pu
+blic/lm/lmtt10.pfb>
+Output written on Case_3.pdf (26 pages, 1255227 bytes).
 PDF statistics:
- 389 PDF objects out of 1000 (max. 8388607)
- 321 compressed objects within 4 object streams
- 54 named destinations out of 1000 (max. 500000)
- 244 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 493 PDF objects out of 1000 (max. 8388607)
+ 416 compressed objects within 5 object streams
+ 75 named destinations out of 1000 (max. 500000)
+ 292 words of extra memory for PDF output out of 10000 (max. 10000000)
 
