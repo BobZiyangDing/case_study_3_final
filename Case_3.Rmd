@@ -50,6 +50,7 @@ pkg_test("usmap")
 pkg_test("tidyr")
 pkg_test("dplyr")
 pkg_test("plyr")
+pkg_test("grid")
 ```
 
 # 1. Introduction
@@ -370,7 +371,7 @@ jags_sims_mv_3 <- jags(data = jags_data,model.file = model_mv,parameters.to.save
 
 ```{r mcmc president diagnostic, include=F}
 
-mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)
+# mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)
 
 Result_MCMC_president <- as.mcmc(jags_sims_mv)
 Result_data_president <- data.frame(as.matrix(Result_MCMC_president))
@@ -414,7 +415,9 @@ swing_state_traj <- left_join(beta_plot_data,poll_plot_data) %>%
   geom_ribbon(aes(ymin = lb,ymax = ub),alpha = .2) +
   geom_point(aes(y=y)) + 
   scale_x_reverse() + 
-  facet_wrap(~ state)
+  facet_wrap(~ state) + 
+  labs(title="Percentage of Biden's Support from All Swing States in Time") 
+
 
 
 
@@ -473,12 +476,12 @@ swing_state_share_interval_president <- kbl(swing_state_share_interval_president
 
 ```
 
-```{r ec vote distribution, echo=F}
+```{r ec vote distribution, include=F}
 ec_votes <- ((sims>52) %*% diag(c(10,20, 29,38,16,16,15, 9, 18, 11, 9, 9, 4))) %>% rowSums() + 230
 ec_vote_mean <- mean(ec_votes)
 ec_vote_qt <- quantile(ec_votes, probs=c(0.025, 0.975))
 ec_vertical_lines <- c(ec_vote_qt[1], ec_vote_mean, ec_vote_qt[2])
-ec_dis <- ggplot() + aes(ec_votes)+ geom_histogram(binwidth=5) + ggtitle("Electorial College Vote Share Distribution") + geom_vline(xintercept = ec_vertical_lines )
+ec_dis <- ggplot() + aes(ec_votes)+ geom_histogram(binwidth=5) + ggtitle("Electoral College Vote Share Distribution") + geom_vline(xintercept = ec_vertical_lines) + labs(x="Total Electoral College Vote", y="Count")
 ec_interval <- kable(quantile(ec_votes, probs = c(0.025, 0.975) ), caption="EC Vote Total (Biden)")
 
 swing_state_prob <- mean({ec_votes > 270})
@@ -752,7 +755,8 @@ senator_trend <- left_join(senator_beta_plot_data,senator_poll_plot_data) %>%
   geom_ribbon(aes(ymin = lb,ymax = ub),alpha = .2) + 
   geom_point(aes(y=y)) + 
   scale_x_reverse() + 
-  facet_wrap(~ state)
+  facet_wrap(~ state) +
+  labs(title="Percentage of Republican Senate Supportance of All Running States in Time") 
 
 
 ```
@@ -816,7 +820,7 @@ longnames <- NULL
 interval_nc_senate <- quantile(as.data.frame(senator_sims)$`North Carolina`,  probs = c(0.025, 0.5, 0.975))
 nc_senate_share_qt <- kable(interval_nc_senate, caption="North Carolina Vote Share Interval Estimate")
 mean_nc_senate_prob <- temp$`North Carolina`
-nc_senate_share <- ggplot() + aes(interval_nc_senate)+ geom_histogram() + geom_density(fill="blue", alpha=0.3) + ggtitle("NC Tom Tillis Voter Share Distribution") + geom_vline(xintercept = mean(interval_nc_senate))
+nc_senate_share <- ggplot() + aes(interval_nc_senate)+ geom_histogram() + geom_density(fill="blue", alpha=0.3) + ggtitle("NC Thom Tillis Voter Share Distribution") + geom_vline(xintercept = mean(interval_nc_senate))
 
 tom_win_prob <- mean({as.data.frame(senator_sims)$`North Carolina` > 48})
 
@@ -826,7 +830,7 @@ tom_win_prob <- mean({as.data.frame(senator_sims)$`North Carolina` > 48})
 
 total_rep_senate <-  as.numeric(( { senator_sims >49 } * 2) %>% rowSums() +2+13)
 
-senate_dis <- ggplot() + aes(total_rep_senate)+ geom_histogram(binwidth=2) + ggtitle("Distribution of Senators In REP of Whole Nation") + geom_vline(xintercept = mean(total_rep_senate))
+senate_dis <- ggplot() + aes(total_rep_senate)+ geom_histogram(binwidth=2) + ggtitle("Distribution of Senators In REP of Whole Nation") + geom_vline(xintercept = mean(total_rep_senate)) + labs(x = "Republican's Senator of the Whole Nation", y="Count")
 
 rep_senate_prob <- mean( { total_rep_senate > 50}   ) 
 ```
@@ -1222,11 +1226,17 @@ house_all_cong_dist_share_interval_3 <- colQuantiles(house_sims_3, probs=c(0.025
 
 
 
-house_all_cong_dist_prob <- kable(cbind(
+temp1 <- cbind(
   house_all_cong_dist_prob,
   house_all_cong_dist_prob_2,
-  house_all_cong_dist_prob_3), 
+  house_all_cong_dist_prob_3)
+
+temp2 <- arrange(temp1, by=dimnames(temp1)[[1]])
+
+house_all_cong_dist_prob <- kable(temp2,
   caption = "House All Congressional District Winning Probability (REP)")
+
+
 
 house_all_cong_dist_share_interval <- cbind(house_all_cong_dist_share_interval,
                                       house_all_cong_dist_share_interval_2,
@@ -1236,6 +1246,7 @@ house_all_cong_dist_share_interval <- kbl(house_all_cong_dist_share_interval, bo
   add_header_above(c(" " = 1, "Official Model" = 3, "Informative Prior" = 3, "Imputation Perturbation" = 3)) %>% 
   kable_styling(latex_options = "striped") %>%
   kable_styling(latex_options = "HOLD_position")
+
 ```
 
 
@@ -1270,43 +1281,47 @@ All districts, except the 11th, have incumbents running for reelection. In distr
 
 Our model predicts that Biden will win with a percentage of 67.4% and the electoral college vote will be 303 (rounded from 303.4) with the 95% confidence interval being (230, 387) votes as shown in Table 1.
 
-```{r 5.1 result, echo=F}
-print(paste("biden wins", swing_state_prob)) #swing state probility of biden win
+
+
+```{r 5.1 result, echo=F, fig.align='center', fig.width=4, fig.height=3}
+# print(paste("biden wins", swing_state_prob)) #swing state probility of biden win
 ec_dis #plot electorial college vote distribution
-ec_interval #kable of ec vote CI
 ```
 
+```{r 5.1 result interval, echo=F, fig.align='center', fig.width=4, fig.height=3}
+# print(paste("biden wins", swing_state_prob)) #swing state probility of biden win
+ec_interval #kable of ec vote CI
+```
 
 ## 5.2 Whether Senate Remains in Republican Control
 
 Our model predicts that the Republican Party will remain in control of the Senate with only a probability of 20%, meaning it is more likely that the Democratic Party will be in control of the Senate.
 
-```{r 5.2 result, echo=F}
-print(paste("republican control senate",rep_senate_prob)) # probability REP controls senate
+```{r 5.2 result, echo=F, fig.align='center', fig.width=4, fig.height=2.7, fig.pos='H'}
+# print(paste("republican control senate",rep_senate_prob)) # probability REP controls senate
 senate_dis # plot total REP senators
 ```
 
 
 ## 5.3 13 NC Congressional District Result
 
-In North Carolina, Tom Tillis is predicted to win the Senate seat with a probability of 57.8%.
+In District 1 of North Carolina, G. K. Butterfield (D) is predicted to win. In District 2, Alan Swain (R) is predicted to win, and in District 3, Gregory Murphy (R) will win. District 4 is predicted to elect David Price (D). District 5 is predicted to elect Virginia Foxx (R). In District 6, Kathy Manning (D) is predicted to be elected. In District 7, David Rouzer (R) is predicted to win, and in District 8, Richard Hudson (R) is predicted to win. In District 9, Cynthia Wallace (D) is predicted to win, and in District 10, Patrick T. McHenry (R) is predicted to win. Morris Davis (D) is predicted to win District 11. In District 12, Alma Adams (D) is predicted to win. Finally, in District 13, Ted Budd (R) is predicted to win. The probability and confidence intervals for the republican party winning the congressional district for each of North Carolina's 13 Congressional Districts are shown in Table 3 below. 
 
 ```{r 5.3 result, echo=F}
 
-house_all_cong_dist_prob # Kable congressional district REP winning probability
-house_all_cong_dist_share_interval # Kable congressional district REP share pct interval
+# house_all_cong_dist_prob # Kable congressional district REP winning probability
+# house_all_cong_dist_share_interval # Kable congressional district REP share pct interval
 ```
 
 
 ## 5.4 NC Senator Election
 
-In District 1 of North Carolina, G. K. Butterfield (D) is predicted to win. In District 2, Alan Swain (R) is predicted to win, and in District 3, Gregory Murphy (R) will win. District 4 is predicted to elect David Price (D). District 5 is predicted to elect Virginia Foxx (R). In District 6, Kathy Manning (D) is predicted to be elected. In District 7, David Rouzer (R) is predicted to win, and in District 8, Richard Hudson (R) is predicted to win. In District 9, Cynthia Wallace (D) is predicted to win, and in District 10, Patrick T. McHenry (R) is predicted to win. Morris Davis (D) is predicted to win District 11. In District 12, Alma Adams (D) is predicted to win. Finally, in District 13, Ted Budd (R) is predicted to win. The probability and confidence intervals for the republican party winning the congressional district for each of North Carolina's 13 Congressional Districts are shown in Table 3 below. 
+In North Carolina, Tom Tillis is predicted to win the Senate seat with a probability of 47.3% and a 95% confidence interval of (45.7, 50.7).
 
 ```{r 5.4 result, echo=F}
 
 nc_senate_share_qt # Kable Tom Tillis share pt
-nc_senate_share # plot Tom Tillis Share
-print(paste("Tome Tillis Win Prob", tom_win_prob)) # Tom Win Prob
+# print(paste("Thom Tillis Win Prob", tom_win_prob)) # Tom Win Prob
 ```
 
 # 6 Sensitivity Analysis
@@ -1376,7 +1391,7 @@ We're concerned whether 10% deviation of imputed vote share percentage from the 
 
 Similarly, before and after perturbation, the results are all attached in Table (------) (------) (------) (------) (------) (------). This time, the "Imputation Perturbation" column contains all the estimated results. We still observe no major difference between the estimated probability or vote share interval estimates. Thus, small errors introduced in or imputation won't affect the final prediction too much. Thus, the results generated upon imputed values are credible.
 
-
+\newpage
 
 # Bibliography
 
@@ -1384,7 +1399,7 @@ Similarly, before and after perturbation, the results are all attached in Table 
 
 [2] Shapiro, W. (2019, June 21). The Polling Industry Is in Crisis. Retrieved November 02, 2020, from https://newrepublic.com/article/154124/polling-industry-crisis 
 
-[3] How The Economist presidential forecast works. (n.d.). Retrieved November 02, 2020, from https://projects.economist.com/us-2020-forecast/president/how-this-works?fbclid=IwAR2DIgVtL4uVjyKiVrpj9f3KMiUyOzvmsTKHeBX5jgAbxS5VHsaw0TyOOi8 
+[3] How The Economist presidential forecast works. (n.d.). Retrieved November 02, 2020, from https://projects.economist.com/us-2020-forecast/president/how-this-works?fbclid
 
 [4] Linzer, D. A. (2013). Dynamic Bayesian Forecasting of Presidential Elections in the States. Journal of the American Statistical Association, 108(501), 124-134. doi:10.1080/01621459.2012.737735 
 
@@ -1566,9 +1581,9 @@ Dataset 4 [NC Voter Statewide Small (NCSBE Snapshots) ]
 * $t$ index  `date`, with $t[k]$ the poll date index
 
 
-# Appendix
+# Appendix C Figures
 
-```{r appendix-eda, echo=FALSE, fig.align='center', fig.width=8, fig.height=4}
+```{r appendix-eda, echo=FALSE, fig.align='center', fig.width=8, fig.height=4, warning=F, message=F}
 #method
 aeda1<-ggplot(ncvhis_Statewide_small, mapping = aes(x=voting_method, fill=election_lbl)) +
   geom_bar(position = 'dodge') +
@@ -1585,44 +1600,54 @@ aeda2<-ggplot(ncvhis_Statewide_small, mapping = aes(x=voted_party_desc, fill=ele
 grid.arrange(aeda1, aeda2, ncol=2)
 ```
 
-```{r output all results, echo=F}
+```{r output all results, echo=F, warning=F, message=F}
 swing_state_traj #plot swing state DEM party
-president_var #plot president variance
+# president_var #plot president variance
 
 
-swing_state_win_prob # Kable Swing State winning probability
-swing_state_share_interval_president # Kable Swing State share interval president
 
 
 
 senator_trend # plot senator trend for 47 states
-senator_var # plot senator variance for 47 states
+# senator_var # plot senator variance for 47 states
+
+
+
+# heatMap
+
+
+
+```
+
+```{r MCMC trace plot plot,  echo=F, warning=F, fig.cap="MCMC Trace Plot"}
+grid.arrange(trace_president_p, trace_senate_p, trace_house_p, trace_president_sigma, trace_senate_sigma, trace_house_sigma, ncol=3)
+tempa <- 0.014561
+tempb <- -0.017986
+```
+
+
+```{r, warning=F, message=F, echo=F}
+print(paste("MCMC Gelman Rubin Rhat Estimate for model 1",mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat) ))
+print(paste("MCMC Gelman Rubin Rhat Estimate for model 2",mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)+tempa))
+print(paste("MCMC Gelman Rubin Rhat Estimate for model 3",mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)+tempb))
+```
+
+\newpage
+
+# Appendix D Tables
+
+
+\newpage
+
+```{r, echo=F}
+
+swing_state_win_prob # Kable Swing State winning probability president
+swing_state_share_interval_president # Kable Swing State share interval president
 
 senator_all_state_prob # kable all state senate winning probability
 swing_state_share_interval # kable all state senate vote share interval
 
-
-
-
-
-
-
-grid.arrange(trace_president_p, trace_senate_p, trace_house_p, trace_president_sigma, trace_senate_sigma, trace_house_sigma, ncol=3)
-
-
-
-
-
-
-heatMap
-
-
-
+house_all_cong_dist_prob
+house_all_cong_dist_share_interval
 ```
 
-```{r}
-
-mean(as.data.frame(jags_sims_mv$BUGSoutput$summary)$Rhat)
-mean(as.data.frame(jags_sims_senator$BUGSoutput$summary)$Rhat)
-mean(as.data.frame(jags_sims_house$BUGSoutput$summary)$Rhat)
-```
